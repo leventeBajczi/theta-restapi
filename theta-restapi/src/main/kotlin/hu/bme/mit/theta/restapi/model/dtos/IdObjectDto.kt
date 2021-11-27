@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  */
 data class IdObjectDto(
 
-    @field:JsonProperty("id", required = true) val id: Int? = null
+    @field:JsonProperty("id", required = true) val id: Int? = null,
 ) {
 
 }

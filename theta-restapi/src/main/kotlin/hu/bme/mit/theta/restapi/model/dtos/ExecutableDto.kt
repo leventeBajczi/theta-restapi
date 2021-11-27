@@ -15,7 +15,7 @@ data class ExecutableDto(
 
     @field:JsonProperty("description", required = true) val description: String,
 
-    @field:JsonProperty("binary", required = true) val binary: String,
+    @field:JsonProperty("binary", required = true) val binary: String? = null,
 
     @field:JsonProperty("commit") val commit: String? = null
 ) {

@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import hu.bme.mit.theta.restapi.model.entities.Task
 import javax.validation.Valid
 
 /**
@@ -32,6 +33,16 @@ data class TaskDto(
     @field:Valid
     @field:JsonProperty("benchmark") val benchmark: TaskBenchmarkDto? = null
 ) {
+
+    constructor(task: Task) : this(
+        id = task.id,
+        timestamp = task.timestamp,
+        InputDto(task.inputName),
+        UserDto(id = task.userId),
+        task.parameters,
+        task.priority,
+        TaskBenchmarkDto(ResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS))
+    ) {}
 
     /**
     * 

@@ -1,22 +1,26 @@
 package hu.bme.mit.theta.restapi.api
 
 import hu.bme.mit.theta.restapi.model.dtos.*
+import hu.bme.mit.theta.restapi.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 @Service
-class TasksApiServiceImpl : TasksApiService {
+class TasksApiServiceImpl(
+    @Autowired
+    val repository: TaskRepository
+) : TasksApiService {
 
-    override fun tasksGet(): Flow<TaskDto> {
-        TODO("Implement me")
-    }
+
+    override fun tasksGet(): Flow<TaskDto> = flow { repository.findAll(); }
 
     override suspend fun tasksIdDelete(id: Int): IdObjectDto {
-        TODO("Implement me")
+        repository.deleteById(id)
+        return IdObjectDto(id)
     }
 
-    override suspend fun tasksIdGet(id: Int): TaskDto {
-        TODO("Implement me")
-    }
+    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow())
 
     override suspend fun tasksIdInputGet(id: Int): InputDto {
         TODO("Implement me")

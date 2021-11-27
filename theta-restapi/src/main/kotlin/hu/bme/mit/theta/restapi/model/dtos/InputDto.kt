@@ -11,7 +11,7 @@ data class InputDto(
 
     @field:JsonProperty("name", required = true) val name: String,
 
-    @field:JsonProperty("content", required = true) val content: String
+    @field:JsonProperty("content", required = true) val content: String? = null
 ) {
 
 }

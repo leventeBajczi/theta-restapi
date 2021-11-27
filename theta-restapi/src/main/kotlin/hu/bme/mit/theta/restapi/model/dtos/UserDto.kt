@@ -14,7 +14,7 @@ data class UserDto(
 
     @field:JsonProperty("id", required = true) val id: Int? = null,
 
-    @field:JsonProperty("name", required = true) val name: String,
+    @field:JsonProperty("name", required = true) val name: String? = null,
 
     @field:JsonProperty("permissions") val permissions: List<Permissions>? = null,
 
