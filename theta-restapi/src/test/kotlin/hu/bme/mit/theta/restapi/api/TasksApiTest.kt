@@ -1,13 +1,9 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.IdObject
-import hu.bme.mit.theta.restapi.model.Input
 import hu.bme.mit.theta.restapi.model.Task
-import hu.bme.mit.theta.restapi.model.TaskBenchmark
-import hu.bme.mit.theta.restapi.model.User
-import org.junit.jupiter.api.Test
-import kotlinx.coroutines.flow.Flow;
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 
 class TasksApiTest {

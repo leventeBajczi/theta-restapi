@@ -1,18 +1,6 @@
 package hu.bme.mit.theta.restapi.model
 
-import java.util.Objects
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
-import hu.bme.mit.theta.restapi.model.Input
-import hu.bme.mit.theta.restapi.model.TaskBenchmark
-import hu.bme.mit.theta.restapi.model.User
-import javax.validation.constraints.DecimalMax
-import javax.validation.constraints.DecimalMin
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
-import javax.validation.constraints.Size
 import javax.validation.Valid
 
 /**
@@ -39,7 +27,7 @@ data class Task(
 
     @field:JsonProperty("parameters") val parameters: List<String>? = null,
 
-    @field:JsonProperty("priority") val priority: Priority? = Priority.bESTEFFORT,
+    @field:JsonProperty("priority") val priority: Priority? = Priority.BESTEFFORT,
 
     @field:Valid
     @field:JsonProperty("benchmark") val benchmark: TaskBenchmark? = null
@@ -47,17 +35,17 @@ data class Task(
 
     /**
     * 
-    * Values: bESTEFFORT,lOW,mEDIUM,hIGH
+    * Values: BESTEFFORT,LOW,MEDIUM,HIGH
     */
     enum class Priority(val value: String) {
     
-        @JsonProperty("BEST_EFFORT") bESTEFFORT("BEST_EFFORT"),
+        @JsonProperty("BEST_EFFORT") BESTEFFORT("BEST_EFFORT"),
     
-        @JsonProperty("LOW") lOW("LOW"),
+        @JsonProperty("LOW") LOW("LOW"),
     
-        @JsonProperty("MEDIUM") mEDIUM("MEDIUM"),
+        @JsonProperty("MEDIUM") MEDIUM("MEDIUM"),
     
-        @JsonProperty("HIGH") hIGH("HIGH");
+        @JsonProperty("HIGH") HIGH("HIGH");
     
     }
 

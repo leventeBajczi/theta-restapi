@@ -1,16 +1,6 @@
 package hu.bme.mit.theta.restapi.model
 
-import java.util.Objects
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
-import hu.bme.mit.theta.restapi.model.Resources
-import javax.validation.constraints.DecimalMax
-import javax.validation.constraints.DecimalMin
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
-import javax.validation.constraints.Size
 import javax.validation.Valid
 
 /**
@@ -34,19 +24,19 @@ data class User(
 
     /**
     * 
-    * Values: lISTTASKS,lISTUSERS,sUBMITTASKS,mANAGEUSERS,mANAGEEXECUTABLES
+    * Values: LISTTASKS,LISTUSERS,SUBMITTASKS,MANAGEUSERS,MANAGEEXECUTABLES
     */
     enum class Permissions(val value: String) {
     
-        @JsonProperty("LIST_TASKS") lISTTASKS("LIST_TASKS"),
+        @JsonProperty("LIST_TASKS") LISTTASKS("LIST_TASKS"),
     
-        @JsonProperty("LIST_USERS") lISTUSERS("LIST_USERS"),
+        @JsonProperty("LIST_USERS") LISTUSERS("LIST_USERS"),
     
-        @JsonProperty("SUBMIT_TASKS") sUBMITTASKS("SUBMIT_TASKS"),
+        @JsonProperty("SUBMIT_TASKS") SUBMITTASKS("SUBMIT_TASKS"),
     
-        @JsonProperty("MANAGE_USERS") mANAGEUSERS("MANAGE_USERS"),
+        @JsonProperty("MANAGE_USERS") MANAGEUSERS("MANAGE_USERS"),
     
-        @JsonProperty("MANAGE_EXECUTABLES") mANAGEEXECUTABLES("MANAGE_EXECUTABLES");
+        @JsonProperty("MANAGE_EXECUTABLES") MANAGEEXECUTABLES("MANAGE_EXECUTABLES");
     
     }
 

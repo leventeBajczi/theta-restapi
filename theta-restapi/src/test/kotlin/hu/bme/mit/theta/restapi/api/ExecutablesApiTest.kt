@@ -1,9 +1,8 @@
 package hu.bme.mit.theta.restapi.api
 
 import hu.bme.mit.theta.restapi.model.Executable
-import org.junit.jupiter.api.Test
-import kotlinx.coroutines.flow.Flow;
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 
 class ExecutablesApiTest {
