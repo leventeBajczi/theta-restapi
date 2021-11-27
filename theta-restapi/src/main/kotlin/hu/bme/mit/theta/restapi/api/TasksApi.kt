@@ -48,7 +48,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks/{id}"],
         produces = ["application/json"]
     )
-    suspend fun tasksIdDelete( @PathVariable("id") id: kotlin.Int
+    suspend fun tasksIdDelete( @PathVariable("id") id: Int
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.tasksIdDelete(id), HttpStatus.valueOf(200))
     }
@@ -59,7 +59,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks/{id}"],
         produces = ["application/json"]
     )
-    suspend fun tasksIdGet( @PathVariable("id") id: kotlin.Int
+    suspend fun tasksIdGet( @PathVariable("id") id: Int
 ): ResponseEntity<Task> {
         return ResponseEntity(service.tasksIdGet(id), HttpStatus.valueOf(200))
     }
@@ -70,7 +70,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks/{id}/input"],
         produces = ["multipart/form-data"]
     )
-    suspend fun tasksIdInputGet( @PathVariable("id") id: kotlin.Int
+    suspend fun tasksIdInputGet( @PathVariable("id") id: Int
 ): ResponseEntity<Input> {
         return ResponseEntity(service.tasksIdInputGet(id), HttpStatus.valueOf(200))
     }
@@ -82,13 +82,13 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun tasksIdPut( @PathVariable("id") id: kotlin.Int
-, @RequestParam(value="id", required=true) id2: kotlin.Int 
+    suspend fun tasksIdPut( @PathVariable("id") id: Int
+, @RequestParam(value="id", required=true) id2: Int
 , @RequestParam(value="timestamp", required=true) timestamp: java.time.OffsetDateTime 
 , @RequestParam(value="input", required=true) input: Input 
 , @RequestParam(value="user", required=true) user: User 
-, @RequestParam(value="parameters", required=false) parameters: kotlin.collections.List<kotlin.String>? 
-, @RequestParam(value="priority", required=false) priority: kotlin.String 
+, @RequestParam(value="parameters", required=false) parameters: List<String>?
+, @RequestParam(value="priority", required=false) priority: String
 , @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmark? 
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.tasksIdPut(id, id2, timestamp, input, user, parameters, priority, benchmark), HttpStatus.valueOf(200))
@@ -101,12 +101,12 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun tasksPost( @RequestParam(value="id", required=true) id: kotlin.Int 
+    suspend fun tasksPost( @RequestParam(value="id", required=true) id: Int
 , @RequestParam(value="timestamp", required=true) timestamp: java.time.OffsetDateTime 
 , @RequestParam(value="input", required=true) input: Input 
 , @RequestParam(value="user", required=true) user: User 
-, @RequestParam(value="parameters", required=false) parameters: kotlin.collections.List<kotlin.String>? 
-, @RequestParam(value="priority", required=false) priority: kotlin.String 
+, @RequestParam(value="parameters", required=false) parameters: List<String>?
+, @RequestParam(value="priority", required=false) priority: String
 , @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmark? 
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.tasksPost(id, timestamp, input, user, parameters, priority, benchmark), HttpStatus.valueOf(200))

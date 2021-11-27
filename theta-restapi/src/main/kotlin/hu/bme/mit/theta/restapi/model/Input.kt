@@ -19,9 +19,9 @@ import javax.validation.Valid
  */
 data class Input(
 
-    @field:JsonProperty("name", required = true) val name: kotlin.String,
+    @field:JsonProperty("name", required = true) val name: String,
 
-    @field:JsonProperty("content", required = true) val content: kotlin.String
+    @field:JsonProperty("content", required = true) val content: String
 ) {
 
 }

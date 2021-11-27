@@ -10,7 +10,7 @@ class ExecutablesApiServiceImpl : ExecutablesApiService {
         TODO("Implement me")
     }
 
-    override suspend fun runexecPut(version: kotlin.String, description: kotlin.String, binary: kotlin.String, commit: kotlin.String?): Executable {
+    override suspend fun runexecPut(version: String, description: String, binary: String, commit: String?): Executable {
         TODO("Implement me")
     }
 
@@ -18,7 +18,7 @@ class ExecutablesApiServiceImpl : ExecutablesApiService {
         TODO("Implement me")
     }
 
-    override suspend fun thetaPut(version: kotlin.String, description: kotlin.String, binary: kotlin.String, commit: kotlin.String?): Executable {
+    override suspend fun thetaPut(version: String, description: String, binary: String, commit: String?): Executable {
         TODO("Implement me")
     }
 }

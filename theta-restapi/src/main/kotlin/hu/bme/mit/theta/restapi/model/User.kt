@@ -22,11 +22,11 @@ import javax.validation.Valid
  */
 data class User(
 
-    @field:JsonProperty("id", required = true) val id: kotlin.Int? = null,
+    @field:JsonProperty("id", required = true) val id: Int? = null,
 
-    @field:JsonProperty("name", required = true) val name: kotlin.String,
+    @field:JsonProperty("name", required = true) val name: String,
 
-    @field:JsonProperty("permissions") val permissions: kotlin.collections.List<User.Permissions>? = null,
+    @field:JsonProperty("permissions") val permissions: List<Permissions>? = null,
 
     @field:Valid
     @field:JsonProperty("quotas") val quotas: Resources? = null
@@ -36,7 +36,7 @@ data class User(
     * 
     * Values: lISTTASKS,lISTUSERS,sUBMITTASKS,mANAGEUSERS,mANAGEEXECUTABLES
     */
-    enum class Permissions(val value: kotlin.String) {
+    enum class Permissions(val value: String) {
     
         @JsonProperty("LIST_TASKS") lISTTASKS("LIST_TASKS"),
     

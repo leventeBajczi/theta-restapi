@@ -7,9 +7,9 @@ interface ExecutablesApiService {
 
     suspend fun runexecGet(): Executable
 
-    suspend fun runexecPut(version: kotlin.String, description: kotlin.String, binary: kotlin.String, commit: kotlin.String?): Executable
+    suspend fun runexecPut(version: String, description: String, binary: String, commit: String?): Executable
 
     suspend fun thetaGet(): Executable
 
-    suspend fun thetaPut(version: kotlin.String, description: kotlin.String, binary: kotlin.String, commit: kotlin.String?): Executable
+    suspend fun thetaPut(version: String, description: String, binary: String, commit: String?): Executable
 }

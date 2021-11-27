@@ -45,7 +45,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers/{id}"],
         produces = ["application/json"]
     )
-    suspend fun workersIdDelete( @PathVariable("id") id: kotlin.Int
+    suspend fun workersIdDelete( @PathVariable("id") id: Int
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.workersIdDelete(id), HttpStatus.valueOf(200))
     }
@@ -56,7 +56,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers/{id}"],
         produces = ["application/json"]
     )
-    suspend fun workersIdGet( @PathVariable("id") id: kotlin.Int
+    suspend fun workersIdGet( @PathVariable("id") id: Int
 ): ResponseEntity<Worker> {
         return ResponseEntity(service.workersIdGet(id), HttpStatus.valueOf(200))
     }
@@ -68,10 +68,10 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun workersIdPut( @PathVariable("id") id: kotlin.Int
-, @RequestParam(value="id", required=true) id2: kotlin.Int 
-, @RequestParam(value="address", required=true) address: kotlin.String 
-, @RequestParam(value="name", required=false) name: kotlin.String? 
+    suspend fun workersIdPut( @PathVariable("id") id: Int
+, @RequestParam(value="id", required=true) id2: Int
+, @RequestParam(value="address", required=true) address: String
+, @RequestParam(value="name", required=false) name: String?
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.workersIdPut(id, id2, address, name), HttpStatus.valueOf(200))
     }
@@ -83,9 +83,9 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun workersPost( @RequestParam(value="id", required=true) id: kotlin.Int 
-, @RequestParam(value="address", required=true) address: kotlin.String 
-, @RequestParam(value="name", required=false) name: kotlin.String? 
+    suspend fun workersPost( @RequestParam(value="id", required=true) id: Int
+, @RequestParam(value="address", required=true) address: String
+, @RequestParam(value="name", required=false) name: String?
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.workersPost(id, address, name), HttpStatus.valueOf(200))
     }

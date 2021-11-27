@@ -27,7 +27,7 @@ import javax.validation.Valid
  */
 data class Task(
 
-    @field:JsonProperty("id", required = true) val id: kotlin.Int? = null,
+    @field:JsonProperty("id", required = true) val id: Int? = null,
 
     @field:JsonProperty("timestamp", required = true) val timestamp: java.time.OffsetDateTime? = null,
 
@@ -37,9 +37,9 @@ data class Task(
     @field:Valid
     @field:JsonProperty("user", required = true) val user: User? = null,
 
-    @field:JsonProperty("parameters") val parameters: kotlin.collections.List<kotlin.String>? = null,
+    @field:JsonProperty("parameters") val parameters: List<String>? = null,
 
-    @field:JsonProperty("priority") val priority: Task.Priority? = Priority.bESTEFFORT,
+    @field:JsonProperty("priority") val priority: Priority? = Priority.bESTEFFORT,
 
     @field:Valid
     @field:JsonProperty("benchmark") val benchmark: TaskBenchmark? = null
@@ -49,7 +49,7 @@ data class Task(
     * 
     * Values: bESTEFFORT,lOW,mEDIUM,hIGH
     */
-    enum class Priority(val value: kotlin.String) {
+    enum class Priority(val value: String) {
     
         @JsonProperty("BEST_EFFORT") bESTEFFORT("BEST_EFFORT"),
     

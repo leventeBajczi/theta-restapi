@@ -46,7 +46,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         value = ["/users/{id}"],
         produces = ["application/json"]
     )
-    suspend fun usersIdDelete( @PathVariable("id") id: kotlin.Int
+    suspend fun usersIdDelete( @PathVariable("id") id: Int
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.usersIdDelete(id), HttpStatus.valueOf(200))
     }
@@ -57,7 +57,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         value = ["/users/{id}"],
         produces = ["application/json"]
     )
-    suspend fun usersIdGet( @PathVariable("id") id: kotlin.Int
+    suspend fun usersIdGet( @PathVariable("id") id: Int
 ): ResponseEntity<User> {
         return ResponseEntity(service.usersIdGet(id), HttpStatus.valueOf(200))
     }
@@ -69,10 +69,10 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun usersIdPut( @PathVariable("id") id: kotlin.Int
-, @RequestParam(value="id", required=true) id2: kotlin.Int 
-, @RequestParam(value="name", required=true) name: kotlin.String 
-, @RequestParam(value="permissions", required=false) permissions: kotlin.collections.List<kotlin.String>? 
+    suspend fun usersIdPut( @PathVariable("id") id: Int
+, @RequestParam(value="id", required=true) id2: Int
+, @RequestParam(value="name", required=true) name: String
+, @RequestParam(value="permissions", required=false) permissions: List<String>?
 , @RequestParam(value="quotas", required=false) quotas: Resources? 
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.usersIdPut(id, id2, name, permissions, quotas), HttpStatus.valueOf(200))
@@ -85,9 +85,9 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun usersPost( @RequestParam(value="id", required=true) id: kotlin.Int 
-, @RequestParam(value="name", required=true) name: kotlin.String 
-, @RequestParam(value="permissions", required=false) permissions: kotlin.collections.List<kotlin.String>? 
+    suspend fun usersPost( @RequestParam(value="id", required=true) id: Int
+, @RequestParam(value="name", required=true) name: String
+, @RequestParam(value="permissions", required=false) permissions: List<String>?
 , @RequestParam(value="quotas", required=false) quotas: Resources? 
 ): ResponseEntity<IdObject> {
         return ResponseEntity(service.usersPost(id, name, permissions, quotas), HttpStatus.valueOf(200))

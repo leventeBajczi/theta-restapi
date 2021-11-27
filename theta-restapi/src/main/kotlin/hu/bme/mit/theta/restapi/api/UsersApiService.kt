@@ -9,11 +9,11 @@ interface UsersApiService {
 
     fun usersGet(): Flow<User>
 
-    suspend fun usersIdDelete(id: kotlin.Int): IdObject
+    suspend fun usersIdDelete(id: Int): IdObject
 
-    suspend fun usersIdGet(id: kotlin.Int): User
+    suspend fun usersIdGet(id: Int): User
 
-    suspend fun usersIdPut(id: kotlin.Int, id2: kotlin.Int, name: kotlin.String, permissions: kotlin.collections.List<kotlin.String>?, quotas: Resources?): IdObject
+    suspend fun usersIdPut(id: Int, id2: Int, name: String, permissions: List<String>?, quotas: Resources?): IdObject
 
-    suspend fun usersPost(id: kotlin.Int, name: kotlin.String, permissions: kotlin.collections.List<kotlin.String>?, quotas: Resources?): IdObject
+    suspend fun usersPost(id: Int, name: String, permissions: List<String>?, quotas: Resources?): IdObject
 }

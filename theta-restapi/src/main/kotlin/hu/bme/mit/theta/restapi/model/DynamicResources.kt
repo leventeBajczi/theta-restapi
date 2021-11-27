@@ -17,7 +17,7 @@ import javax.validation.Valid
  */
 data class DynamicResources(
 
-    @field:JsonProperty("timeout_s") val timeoutS: kotlin.Int? = null
+    @field:JsonProperty("timeout_s") val timeoutS: Int? = null
 ) {
 
 }

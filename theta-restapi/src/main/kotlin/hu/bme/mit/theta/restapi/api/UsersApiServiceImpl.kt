@@ -12,19 +12,19 @@ class UsersApiServiceImpl : UsersApiService {
         TODO("Implement me")
     }
 
-    override suspend fun usersIdDelete(id: kotlin.Int): IdObject {
+    override suspend fun usersIdDelete(id: Int): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun usersIdGet(id: kotlin.Int): User {
+    override suspend fun usersIdGet(id: Int): User {
         TODO("Implement me")
     }
 
-    override suspend fun usersIdPut(id: kotlin.Int, id2: kotlin.Int, name: kotlin.String, permissions: kotlin.collections.List<kotlin.String>?, quotas: Resources?): IdObject {
+    override suspend fun usersIdPut(id: Int, id2: Int, name: String, permissions: List<String>?, quotas: Resources?): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun usersPost(id: kotlin.Int, name: kotlin.String, permissions: kotlin.collections.List<kotlin.String>?, quotas: Resources?): IdObject {
+    override suspend fun usersPost(id: Int, name: String, permissions: List<String>?, quotas: Resources?): IdObject {
         TODO("Implement me")
     }
 }

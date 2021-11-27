@@ -19,11 +19,11 @@ import javax.validation.Valid
  */
 data class Worker(
 
-    @field:JsonProperty("id", required = true) val id: kotlin.Int? = null,
+    @field:JsonProperty("id", required = true) val id: Int? = null,
 
-    @field:JsonProperty("address", required = true) val address: kotlin.String,
+    @field:JsonProperty("address", required = true) val address: String,
 
-    @field:JsonProperty("name") val name: kotlin.String? = null
+    @field:JsonProperty("name") val name: String? = null
 ) {
 
 }

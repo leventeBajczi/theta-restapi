@@ -20,13 +20,13 @@ import javax.validation.Valid
  */
 data class Executable(
 
-    @field:JsonProperty("version", required = true) val version: kotlin.String,
+    @field:JsonProperty("version", required = true) val version: String,
 
-    @field:JsonProperty("description", required = true) val description: kotlin.String,
+    @field:JsonProperty("description", required = true) val description: String,
 
-    @field:JsonProperty("binary", required = true) val binary: kotlin.String,
+    @field:JsonProperty("binary", required = true) val binary: String,
 
-    @field:JsonProperty("commit") val commit: kotlin.String? = null
+    @field:JsonProperty("commit") val commit: String? = null
 ) {
 
 }

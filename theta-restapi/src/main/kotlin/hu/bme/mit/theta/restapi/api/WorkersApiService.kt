@@ -8,11 +8,11 @@ interface WorkersApiService {
 
     fun workersGet(): Flow<Worker>
 
-    suspend fun workersIdDelete(id: kotlin.Int): IdObject
+    suspend fun workersIdDelete(id: Int): IdObject
 
-    suspend fun workersIdGet(id: kotlin.Int): Worker
+    suspend fun workersIdGet(id: Int): Worker
 
-    suspend fun workersIdPut(id: kotlin.Int, id2: kotlin.Int, address: kotlin.String, name: kotlin.String?): IdObject
+    suspend fun workersIdPut(id: Int, id2: Int, address: String, name: String?): IdObject
 
-    suspend fun workersPost(id: kotlin.Int, address: kotlin.String, name: kotlin.String?): IdObject
+    suspend fun workersPost(id: Int, address: String, name: String?): IdObject
 }

@@ -22,7 +22,7 @@ data class TaskBenchmark(
     @field:Valid
     @field:JsonProperty("resources") val resources: Resources? = null,
 
-    @field:JsonProperty("enabled") val enabled: kotlin.Boolean? = null
+    @field:JsonProperty("enabled") val enabled: Boolean? = null
 ) {
 
 }

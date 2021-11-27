@@ -45,10 +45,10 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun runexecPut( @RequestParam(value="version", required=true) version: kotlin.String 
-, @RequestParam(value="description", required=true) description: kotlin.String 
-, @RequestParam(value="binary", required=true) binary: kotlin.String 
-, @RequestParam(value="commit", required=false) commit: kotlin.String? 
+    suspend fun runexecPut( @RequestParam(value="version", required=true) version: String
+, @RequestParam(value="description", required=true) description: String
+, @RequestParam(value="binary", required=true) binary: String
+, @RequestParam(value="commit", required=false) commit: String?
 ): ResponseEntity<Executable> {
         return ResponseEntity(service.runexecPut(version, description, binary, commit), HttpStatus.valueOf(200))
     }
@@ -70,10 +70,10 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         produces = ["application/json"],
         consumes = ["multipart/form-data"]
     )
-    suspend fun thetaPut( @RequestParam(value="version", required=true) version: kotlin.String 
-, @RequestParam(value="description", required=true) description: kotlin.String 
-, @RequestParam(value="binary", required=true) binary: kotlin.String 
-, @RequestParam(value="commit", required=false) commit: kotlin.String? 
+    suspend fun thetaPut( @RequestParam(value="version", required=true) version: String
+, @RequestParam(value="description", required=true) description: String
+, @RequestParam(value="binary", required=true) binary: String
+, @RequestParam(value="commit", required=false) commit: String?
 ): ResponseEntity<Executable> {
         return ResponseEntity(service.thetaPut(version, description, binary, commit), HttpStatus.valueOf(200))
     }

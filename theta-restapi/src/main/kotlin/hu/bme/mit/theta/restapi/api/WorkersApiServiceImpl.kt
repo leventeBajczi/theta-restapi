@@ -11,19 +11,19 @@ class WorkersApiServiceImpl : WorkersApiService {
         TODO("Implement me")
     }
 
-    override suspend fun workersIdDelete(id: kotlin.Int): IdObject {
+    override suspend fun workersIdDelete(id: Int): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun workersIdGet(id: kotlin.Int): Worker {
+    override suspend fun workersIdGet(id: Int): Worker {
         TODO("Implement me")
     }
 
-    override suspend fun workersIdPut(id: kotlin.Int, id2: kotlin.Int, address: kotlin.String, name: kotlin.String?): IdObject {
+    override suspend fun workersIdPut(id: Int, id2: Int, address: String, name: String?): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun workersPost(id: kotlin.Int, address: kotlin.String, name: kotlin.String?): IdObject {
+    override suspend fun workersPost(id: Int, address: String, name: String?): IdObject {
         TODO("Implement me")
     }
 }

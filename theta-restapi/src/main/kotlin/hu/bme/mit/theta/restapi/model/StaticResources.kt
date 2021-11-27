@@ -19,11 +19,11 @@ import javax.validation.Valid
  */
 data class StaticResources(
 
-    @field:JsonProperty("logical_cpu") val logicalCpu: kotlin.Int? = null,
+    @field:JsonProperty("logical_cpu") val logicalCpu: Int? = null,
 
-    @field:JsonProperty("ram_G") val ramG: kotlin.Int? = null,
+    @field:JsonProperty("ram_G") val ramG: Int? = null,
 
-    @field:JsonProperty("ram_M") val ramM: kotlin.Int? = null
+    @field:JsonProperty("ram_M") val ramM: Int? = null
 ) {
 
 }

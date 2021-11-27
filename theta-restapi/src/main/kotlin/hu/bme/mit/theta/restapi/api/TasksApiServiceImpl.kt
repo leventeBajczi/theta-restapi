@@ -14,23 +14,23 @@ class TasksApiServiceImpl : TasksApiService {
         TODO("Implement me")
     }
 
-    override suspend fun tasksIdDelete(id: kotlin.Int): IdObject {
+    override suspend fun tasksIdDelete(id: Int): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun tasksIdGet(id: kotlin.Int): Task {
+    override suspend fun tasksIdGet(id: Int): Task {
         TODO("Implement me")
     }
 
-    override suspend fun tasksIdInputGet(id: kotlin.Int): Input {
+    override suspend fun tasksIdInputGet(id: Int): Input {
         TODO("Implement me")
     }
 
-    override suspend fun tasksIdPut(id: kotlin.Int, id2: kotlin.Int, timestamp: java.time.OffsetDateTime, input: Input, user: User, parameters: kotlin.collections.List<kotlin.String>?, priority: kotlin.String, benchmark: TaskBenchmark?): IdObject {
+    override suspend fun tasksIdPut(id: Int, id2: Int, timestamp: java.time.OffsetDateTime, input: Input, user: User, parameters: List<String>?, priority: String, benchmark: TaskBenchmark?): IdObject {
         TODO("Implement me")
     }
 
-    override suspend fun tasksPost(id: kotlin.Int, timestamp: java.time.OffsetDateTime, input: Input, user: User, parameters: kotlin.collections.List<kotlin.String>?, priority: kotlin.String, benchmark: TaskBenchmark?): IdObject {
+    override suspend fun tasksPost(id: Int, timestamp: java.time.OffsetDateTime, input: Input, user: User, parameters: List<String>?, priority: String, benchmark: TaskBenchmark?): IdObject {
         TODO("Implement me")
     }
 }

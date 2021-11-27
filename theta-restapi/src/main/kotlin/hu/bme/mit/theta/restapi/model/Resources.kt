@@ -22,13 +22,13 @@ import javax.validation.Valid
  */
 data class Resources(
 
-    @field:JsonProperty("logical_cpu") val logicalCpu: kotlin.Int? = null,
+    @field:JsonProperty("logical_cpu") val logicalCpu: Int? = null,
 
-    @field:JsonProperty("ram_G") val ramG: kotlin.Int? = null,
+    @field:JsonProperty("ram_G") val ramG: Int? = null,
 
-    @field:JsonProperty("ram_M") val ramM: kotlin.Int? = null,
+    @field:JsonProperty("ram_M") val ramM: Int? = null,
 
-    @field:JsonProperty("timeout_s") val timeoutS: kotlin.Int? = null
+    @field:JsonProperty("timeout_s") val timeoutS: Int? = null
 ) {
 
 }

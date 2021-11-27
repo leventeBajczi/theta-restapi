@@ -17,7 +17,7 @@ import javax.validation.Valid
  */
 data class IdObject(
 
-    @field:JsonProperty("id", required = true) val id: kotlin.Int? = null
+    @field:JsonProperty("id", required = true) val id: Int? = null
 ) {
 
 }
