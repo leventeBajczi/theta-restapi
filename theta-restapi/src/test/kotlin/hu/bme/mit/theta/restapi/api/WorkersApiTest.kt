@@ -33,8 +33,8 @@ class WorkersApiTest {
      */
     @Test
     fun workersIdDeleteTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<IdObject> = api.workersIdDelete(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<IdObject> = api.workersIdDelete(id)
 
         // TODO: test validations
     }
@@ -47,8 +47,8 @@ class WorkersApiTest {
      */
     @Test
     fun workersIdGetTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<Worker> = api.workersIdGet(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<Worker> = api.workersIdGet(id)
 
         // TODO: test validations
     }
@@ -61,11 +61,11 @@ class WorkersApiTest {
      */
     @Test
     fun workersIdPutTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val id2:kotlin.Int? = null
-        val address:kotlin.String? = null
-        val name:kotlin.String? = null
-        val response: ResponseEntity<IdObject> = api.workersIdPut(id, id2, address, name)
+//        val id:kotlin.Int? = null
+//        val id2:kotlin.Int? = null
+//        val address:kotlin.String? = null
+//        val name:kotlin.String? = null
+//        val response: ResponseEntity<IdObject> = api.workersIdPut(id, id2, address, name)
 
         // TODO: test validations
     }
@@ -78,10 +78,10 @@ class WorkersApiTest {
      */
     @Test
     fun workersPostTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val address:kotlin.String? = null
-        val name:kotlin.String? = null
-        val response: ResponseEntity<IdObject> = api.workersPost(id, address, name)
+//        val id:kotlin.Int? = null
+//        val address:kotlin.String? = null
+//        val name:kotlin.String? = null
+//        val response: ResponseEntity<IdObject> = api.workersPost(id, address, name)
 
         // TODO: test validations
     }

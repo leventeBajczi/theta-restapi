@@ -34,8 +34,8 @@ class UsersApiTest {
      */
     @Test
     fun usersIdDeleteTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<IdObject> = api.usersIdDelete(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<IdObject> = api.usersIdDelete(id)
 
         // TODO: test validations
     }
@@ -48,8 +48,8 @@ class UsersApiTest {
      */
     @Test
     fun usersIdGetTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<User> = api.usersIdGet(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<User> = api.usersIdGet(id)
 
         // TODO: test validations
     }
@@ -62,12 +62,12 @@ class UsersApiTest {
      */
     @Test
     fun usersIdPutTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val id2:kotlin.Int? = null
-        val name:kotlin.String? = null
-        val permissions:kotlin.collections.List<kotlin.String>? = null
-        val quotas:Resources? = null
-        val response: ResponseEntity<IdObject> = api.usersIdPut(id, id2, name, permissions, quotas)
+//        val id:kotlin.Int? = null
+//        val id2:kotlin.Int? = null
+//        val name:kotlin.String? = null
+//        val permissions:kotlin.collections.List<kotlin.String>? = null
+//        val quotas:Resources? = null
+//        val response: ResponseEntity<IdObject> = api.usersIdPut(id, id2, name, permissions, quotas)
 
         // TODO: test validations
     }
@@ -80,11 +80,11 @@ class UsersApiTest {
      */
     @Test
     fun usersPostTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val name:kotlin.String? = null
-        val permissions:kotlin.collections.List<kotlin.String>? = null
-        val quotas:Resources? = null
-        val response: ResponseEntity<IdObject> = api.usersPost(id, name, permissions, quotas)
+//        val id:kotlin.Int? = null
+//        val name:kotlin.String? = null
+//        val permissions:kotlin.collections.List<kotlin.String>? = null
+//        val quotas:Resources? = null
+//        val response: ResponseEntity<IdObject> = api.usersPost(id, name, permissions, quotas)
 
         // TODO: test validations
     }

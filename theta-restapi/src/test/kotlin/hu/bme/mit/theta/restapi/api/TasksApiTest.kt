@@ -36,8 +36,8 @@ class TasksApiTest {
      */
     @Test
     fun tasksIdDeleteTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<IdObject> = api.tasksIdDelete(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<IdObject> = api.tasksIdDelete(id)
 
         // TODO: test validations
     }
@@ -50,8 +50,8 @@ class TasksApiTest {
      */
     @Test
     fun tasksIdGetTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<Task> = api.tasksIdGet(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<Task> = api.tasksIdGet(id)
 
         // TODO: test validations
     }
@@ -64,8 +64,8 @@ class TasksApiTest {
      */
     @Test
     fun tasksIdInputGetTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val response: ResponseEntity<Input> = api.tasksIdInputGet(id)
+//        val id:kotlin.Int? = null
+//        val response: ResponseEntity<Input> = api.tasksIdInputGet(id)
 
         // TODO: test validations
     }
@@ -78,15 +78,15 @@ class TasksApiTest {
      */
     @Test
     fun tasksIdPutTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val id2:kotlin.Int? = null
-        val timestamp:java.time.OffsetDateTime? = null
-        val input:Input? = null
-        val user:User? = null
-        val parameters:kotlin.collections.List<kotlin.String>? = null
-        val priority:kotlin.String? = null
-        val benchmark:TaskBenchmark? = null
-        val response: ResponseEntity<IdObject> = api.tasksIdPut(id, id2, timestamp, input, user, parameters, priority, benchmark)
+//        val id:kotlin.Int? = null
+//        val id2:kotlin.Int? = null
+//        val timestamp:java.time.OffsetDateTime? = null
+//        val input:Input? = null
+//        val user:User? = null
+//        val parameters:kotlin.collections.List<kotlin.String>? = null
+//        val priority:kotlin.String? = null
+//        val benchmark:TaskBenchmark? = null
+//        val response: ResponseEntity<IdObject> = api.tasksIdPut(id, id2, timestamp, input, user, parameters, priority, benchmark)
 
         // TODO: test validations
     }
@@ -99,14 +99,14 @@ class TasksApiTest {
      */
     @Test
     fun tasksPostTest() = runBlockingTest {
-        val id:kotlin.Int? = null
-        val timestamp:java.time.OffsetDateTime? = null
-        val input:Input? = null
-        val user:User? = null
-        val parameters:kotlin.collections.List<kotlin.String>? = null
-        val priority:kotlin.String? = null
-        val benchmark:TaskBenchmark? = null
-        val response: ResponseEntity<IdObject> = api.tasksPost(id, timestamp, input, user, parameters, priority, benchmark)
+//        val id:kotlin.Int? = null
+//        val timestamp:java.time.OffsetDateTime? = null
+//        val input:Input? = null
+//        val user:User? = null
+//        val parameters:kotlin.collections.List<kotlin.String>? = null
+//        val priority:kotlin.String? = null
+//        val benchmark:TaskBenchmark? = null
+//        val response: ResponseEntity<IdObject> = api.tasksPost(id, timestamp, input, user, parameters, priority, benchmark)
 
         // TODO: test validations
     }

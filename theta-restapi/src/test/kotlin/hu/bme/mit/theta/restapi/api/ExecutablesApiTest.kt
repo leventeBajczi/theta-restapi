@@ -32,11 +32,11 @@ class ExecutablesApiTest {
      */
     @Test
     fun runexecPutTest() = runBlockingTest {
-        val version:kotlin.String? = null
-        val description:kotlin.String? = null
-        val binary:kotlin.String? = null
-        val commit:kotlin.String? = null
-        val response: ResponseEntity<Executable> = api.runexecPut(version, description, binary, commit)
+//        val version:kotlin.String? = null
+//        val description:kotlin.String? = null
+//        val binary:kotlin.String? = null
+//        val commit:kotlin.String? = null
+//        val response: ResponseEntity<Executable> = api.runexecPut(version, description, binary, commit)
 
         // TODO: test validations
     }
@@ -62,11 +62,11 @@ class ExecutablesApiTest {
      */
     @Test
     fun thetaPutTest() = runBlockingTest {
-        val version:kotlin.String? = null
-        val description:kotlin.String? = null
-        val binary:kotlin.String? = null
-        val commit:kotlin.String? = null
-        val response: ResponseEntity<Executable> = api.thetaPut(version, description, binary, commit)
+//        val version:kotlin.String? = null
+//        val description:kotlin.String? = null
+//        val binary:kotlin.String? = null
+//        val commit:kotlin.String? = null
+//        val response: ResponseEntity<Executable> = api.thetaPut(version, description, binary, commit)
 
         // TODO: test validations
     }

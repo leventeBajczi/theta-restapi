@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-group = "org.openapitools"
+group = "hu.bme.mit.theta"
 version = "1.0.0"
 
 repositories {
@@ -19,11 +19,11 @@ repositories {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 plugins {
-    val kotlinVersion = "1.3.30"
+    val kotlinVersion = "1.6.0"
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
@@ -32,7 +32,7 @@ plugins {
 }
 
 dependencies {
-    val kotlinxCoroutinesVersion="1.5.0"
+    val kotlinxCoroutinesVersion="1.6.0-RC"
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
     compile("org.springframework.boot:spring-boot-starter-webflux")
