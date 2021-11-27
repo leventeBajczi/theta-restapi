@@ -1,0 +1,550 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: ThetaREST
+  description: A REST-ful way of reaching Theta
+
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  schemas:
+    IdObject:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+    Worker:
+      type: object
+      required:
+        - id
+        - address
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        address:
+          type: string
+        name:
+          type: string
+    SingleInput:
+      type: object
+      required:
+        - name
+        - content
+      properties:
+        name:
+          type: string
+        content: 
+          type: string
+          format: base64
+    MultiInput:
+      type: array
+      items:
+        $ref: '#/components/schemas/SingleInput'
+    Input:
+      anyOf:
+        - $ref: '#/components/schemas/SingleInput'
+        - $ref: '#/components/schemas/MultiInput'
+    StaticResources:
+      type: object
+      properties:
+        logical_cpu:
+          type: integer
+        ram_G:
+          type: integer
+        ram_M:
+          type: integer
+    DynamicResources:
+      type: object
+      properties:
+        timeout_s:
+          type: integer
+    Resources:
+      allOf:
+        - $ref: '#/components/schemas/StaticResources'
+        - $ref: '#/components/schemas/DynamicResources'
+    Task:
+      type: object
+      required:
+        - input
+        - id
+        - timestamp
+        - user
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          format: uuid
+        timestamp:
+          type: string
+          readOnly: true
+          format: date-time
+        input:
+          allOf:
+            - $ref: '#/components/schemas/Input'
+          writeOnly: true
+        parameters:
+          type: array
+          items:
+            type: string
+        priority:
+          enum:
+            - "BEST_EFFORT"
+            - "LOW"
+            - "MEDIUM"
+            - "HIGH"
+          default:
+            "BEST_EFFORT"
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+          readOnly: true
+        benchmark:
+          type: object
+          properties:
+            resources: 
+              $ref: '#/components/schemas/Resources'
+            enabled: 
+              type: boolean
+    Executable:
+      type: object
+      required: 
+        - version
+        - description
+        - binary
+      properties:
+        commit: 
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        binary:
+          type: string
+          format: base64
+          writeOnly: true
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          format: uuid
+        name:
+          type: string
+        permissions:
+          type: array
+          items:
+            enum:
+              - "LIST_TASKS"
+              - "LIST_USERS"
+              - "SUBMIT_TASKS"
+              - "MANAGE_USERS"
+              - "MANAGE_EXECUTABLES"
+        quotas:
+          $ref: '#/components/schemas/Resources'
+security:
+  - ApiKey: []
+
+paths:
+  /tasks:
+    get:
+      tags:
+        - "tasks"
+      description: Returns the status information of verification tasks in the queue
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                type: array
+                items:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          description: "Unauthorized"
+    post:
+      tags:
+        - "tasks"
+      description: Add a new verification task to the queue
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/Task'
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad request"
+  /tasks/{id}:
+    parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        schema:
+          type: integer
+          description: "Task ID"
+    get:
+      tags:
+        - "tasks"
+      description: Returns a verification task
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "Task not found"
+    delete:
+      tags:
+        - "tasks"
+      description: Deletes a verification task
+      responses:
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+    put:
+      tags:
+        - "tasks"
+      description: Updates a verification task (only available until the task is not started)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad request"
+  /tasks/{id}/input:
+    parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        schema:
+          type: integer
+          description: "Task ID"
+    get:
+      tags:
+        - "tasks"
+      description: Returns the input(s) of the verification task
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Input'
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "Task not found"
+          
+  /resources:
+    get:
+      tags:
+        - "resources"
+      description: Returns the resources managed by the server
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticResources'
+        '401':
+          description: "Unauthorized"
+          
+  /theta:
+    get:
+      tags:
+        - "executables"
+      description: Returns the version information of Theta
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Executable'
+        '401':
+          description: "Unauthorized"
+    put:
+      tags:
+        - "executables"
+      description: Updates the Theta executable package
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/Executable'
+      responses:
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Executable'
+        '401':
+          description: "Unauthorized"
+          
+  /runexec:
+    get:
+      tags:
+        - "executables"
+      description: Returns the version information of Runexec
+      responses: 
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Executable'
+        '401':
+          description: "Unauthorized"
+    put:
+      tags:
+        - "executables"
+      description: Updates the Runexec executable package
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/Executable'
+      responses:
+        '200':
+         description: "Query OK"
+         content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Executable'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad Request"
+
+  /users:
+    get:
+      tags:
+        - "users"
+      description: Returns the users associated with the project
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: "Unauthorized"
+    post:
+      tags:
+        - "users"
+      description: Add a new user
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/User'
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad Request"
+  /users/{id}:
+    parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        schema:
+          type: integer
+          description: "User ID"
+    get:
+      tags:
+        - "users"
+      description: Returns a user
+      responses:
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "User not found"
+    delete:
+      tags:
+        - "users"
+      description: Deletes a user
+      responses:
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+    put:
+      tags:
+        - "users"
+      description: Updates a user
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/User'
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad Request"
+    
+  /workers:
+    get:
+      tags:
+        - "workers"
+      description: Returns the workers associated with the server
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Worker'
+        '401':
+          description: "Unauthorized"
+    post:
+      tags:
+        - "workers"
+      description: Add a new worker
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/Worker'
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad Request"
+  /workers/{id}:
+    parameters:
+      - in: "path"
+        name: "id"
+        required: true
+        schema:
+          type: integer
+          description: "Worker ID"
+    get:
+      tags:
+        - "workers"
+      description: Returns a worker
+      responses:
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Worker'
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "Worker not found"
+    delete:
+      tags:
+        - "workers"
+      description: Deletes a worker
+      responses:
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+    put:
+      tags:
+        - "workers"
+      description: Updates a worker
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/Worker'
+      responses: 
+        '200':
+          description: "Query OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad Request"
