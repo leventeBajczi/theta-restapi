@@ -1,7 +1,7 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.IdObject
-import hu.bme.mit.theta.restapi.model.Worker
+import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
 import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,7 +20,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers"],
         produces = ["application/json"]
     )
-    fun workersGet(): ResponseEntity<Flow<Worker>> {
+    fun workersGet(): ResponseEntity<Flow<WorkerDto>> {
         return ResponseEntity(service.workersGet(), HttpStatus.valueOf(200))
     }
 
@@ -31,7 +31,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersIdDelete( @PathVariable("id") id: Int
-): ResponseEntity<IdObject> {
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.workersIdDelete(id), HttpStatus.valueOf(200))
     }
 
@@ -42,7 +42,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersIdGet( @PathVariable("id") id: Int
-): ResponseEntity<Worker> {
+): ResponseEntity<WorkerDto> {
         return ResponseEntity(service.workersIdGet(id), HttpStatus.valueOf(200))
     }
 
@@ -57,7 +57,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
 , @RequestParam(value="id", required=true) id2: Int
 , @RequestParam(value="address", required=true) address: String
 , @RequestParam(value="name", required=false) name: String?
-): ResponseEntity<IdObject> {
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.workersIdPut(id, id2, address, name), HttpStatus.valueOf(200))
     }
 
@@ -71,7 +71,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
     suspend fun workersPost( @RequestParam(value="id", required=true) id: Int
 , @RequestParam(value="address", required=true) address: String
 , @RequestParam(value="name", required=false) name: String?
-): ResponseEntity<IdObject> {
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.workersPost(id, address, name), HttpStatus.valueOf(200))
     }
 }

@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model
+package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param address 
  * @param name 
  */
-data class Worker(
+data class WorkerDto(
 
     @field:JsonProperty("id", required = true) val id: Int? = null,
 

@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.Executable
+import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/runexec"],
         produces = ["application/json"]
     )
-    suspend fun runexecGet(): ResponseEntity<Executable> {
+    suspend fun runexecGet(): ResponseEntity<ExecutableDto> {
         return ResponseEntity(service.runexecGet(), HttpStatus.valueOf(200))
     }
 
@@ -36,7 +36,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
 , @RequestParam(value="description", required=true) description: String
 , @RequestParam(value="binary", required=true) binary: String
 , @RequestParam(value="commit", required=false) commit: String?
-): ResponseEntity<Executable> {
+): ResponseEntity<ExecutableDto> {
         return ResponseEntity(service.runexecPut(version, description, binary, commit), HttpStatus.valueOf(200))
     }
 
@@ -46,7 +46,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/theta"],
         produces = ["application/json"]
     )
-    suspend fun thetaGet(): ResponseEntity<Executable> {
+    suspend fun thetaGet(): ResponseEntity<ExecutableDto> {
         return ResponseEntity(service.thetaGet(), HttpStatus.valueOf(200))
     }
 
@@ -61,7 +61,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
 , @RequestParam(value="description", required=true) description: String
 , @RequestParam(value="binary", required=true) binary: String
 , @RequestParam(value="commit", required=false) commit: String?
-): ResponseEntity<Executable> {
+): ResponseEntity<ExecutableDto> {
         return ResponseEntity(service.thetaPut(version, description, binary, commit), HttpStatus.valueOf(200))
     }
 }

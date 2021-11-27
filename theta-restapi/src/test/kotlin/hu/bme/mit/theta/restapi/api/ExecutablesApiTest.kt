@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.Executable
+import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
@@ -18,7 +18,7 @@ class ExecutablesApiTest {
      */
     @Test
     fun runexecGetTest() = runBlockingTest {
-        val response: ResponseEntity<Executable> = api.runexecGet()
+        val response: ResponseEntity<ExecutableDto> = api.runexecGet()
 
         // TODO: test validations
     }
@@ -48,7 +48,7 @@ class ExecutablesApiTest {
      */
     @Test
     fun thetaGetTest() = runBlockingTest {
-        val response: ResponseEntity<Executable> = api.thetaGet()
+        val response: ResponseEntity<ExecutableDto> = api.thetaGet()
 
         // TODO: test validations
     }

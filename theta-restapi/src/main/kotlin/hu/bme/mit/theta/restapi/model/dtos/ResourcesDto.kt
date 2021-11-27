@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model
+package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param ramM 
  * @param timeoutS 
  */
-data class Resources(
+data class ResourcesDto(
 
     @field:JsonProperty("logical_cpu") val logicalCpu: Int? = null,
 

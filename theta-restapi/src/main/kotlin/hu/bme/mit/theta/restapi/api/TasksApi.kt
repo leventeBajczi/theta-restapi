@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.*
+import hu.bme.mit.theta.restapi.model.dtos.*
 import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,7 +19,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks"],
         produces = ["application/json"]
     )
-    fun tasksGet(): ResponseEntity<Flow<Task>> {
+    fun tasksGet(): ResponseEntity<Flow<TaskDto>> {
         return ResponseEntity(service.tasksGet(), HttpStatus.valueOf(200))
     }
 
@@ -30,7 +30,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksIdDelete( @PathVariable("id") id: Int
-): ResponseEntity<IdObject> {
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.tasksIdDelete(id), HttpStatus.valueOf(200))
     }
 
@@ -41,7 +41,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksIdGet( @PathVariable("id") id: Int
-): ResponseEntity<Task> {
+): ResponseEntity<TaskDto> {
         return ResponseEntity(service.tasksIdGet(id), HttpStatus.valueOf(200))
     }
 
@@ -52,7 +52,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["multipart/form-data"]
     )
     suspend fun tasksIdInputGet( @PathVariable("id") id: Int
-): ResponseEntity<Input> {
+): ResponseEntity<InputDto> {
         return ResponseEntity(service.tasksIdInputGet(id), HttpStatus.valueOf(200))
     }
 
@@ -66,12 +66,12 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     suspend fun tasksIdPut( @PathVariable("id") id: Int
 , @RequestParam(value="id", required=true) id2: Int
 , @RequestParam(value="timestamp", required=true) timestamp: java.time.OffsetDateTime 
-, @RequestParam(value="input", required=true) input: Input 
-, @RequestParam(value="user", required=true) user: User 
+, @RequestParam(value="input", required=true) input: InputDto
+, @RequestParam(value="user", required=true) user: UserDto
 , @RequestParam(value="parameters", required=false) parameters: List<String>?
 , @RequestParam(value="priority", required=false) priority: String
-, @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmark? 
-): ResponseEntity<IdObject> {
+, @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmarkDto?
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.tasksIdPut(id, id2, timestamp, input, user, parameters, priority, benchmark), HttpStatus.valueOf(200))
     }
 
@@ -84,12 +84,12 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     )
     suspend fun tasksPost( @RequestParam(value="id", required=true) id: Int
 , @RequestParam(value="timestamp", required=true) timestamp: java.time.OffsetDateTime 
-, @RequestParam(value="input", required=true) input: Input 
-, @RequestParam(value="user", required=true) user: User 
+, @RequestParam(value="input", required=true) input: InputDto
+, @RequestParam(value="user", required=true) user: UserDto
 , @RequestParam(value="parameters", required=false) parameters: List<String>?
 , @RequestParam(value="priority", required=false) priority: String
-, @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmark? 
-): ResponseEntity<IdObject> {
+, @RequestParam(value="benchmark", required=false) benchmark: TaskBenchmarkDto?
+): ResponseEntity<IdObjectDto> {
         return ResponseEntity(service.tasksPost(id, timestamp, input, user, parameters, priority, benchmark), HttpStatus.valueOf(200))
     }
 }

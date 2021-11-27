@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model
+package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param name 
  * @param content 
  */
-data class SingleInput(
+data class SingleInputDto(
 
     @field:JsonProperty("name", required = true) val name: String,
 

@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.User
+import hu.bme.mit.theta.restapi.model.dtos.UserDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class UsersApiTest {
      */
     @Test
     fun usersGetTest() = runBlockingTest {
-        val response: ResponseEntity<Flow<User>> = api.usersGet()
+        val response: ResponseEntity<Flow<UserDto>> = api.usersGet()
 
         // TODO: test validations
     }

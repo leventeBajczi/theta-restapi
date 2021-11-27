@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model
+package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param binary 
  * @param commit 
  */
-data class Executable(
+data class ExecutableDto(
 
     @field:JsonProperty("version", required = true) val version: String,
 
