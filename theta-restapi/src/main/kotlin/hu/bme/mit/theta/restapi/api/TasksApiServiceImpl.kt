@@ -1,6 +1,10 @@
 package hu.bme.mit.theta.restapi.api
 
-import hu.bme.mit.theta.restapi.model.dtos.*
+import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.MultiInputDto
+import hu.bme.mit.theta.restapi.model.dtos.TaskDto
+import hu.bme.mit.theta.restapi.model.entities.Task
+import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -9,7 +13,9 @@ import org.springframework.stereotype.Service
 @Service
 class TasksApiServiceImpl(
     @Autowired
-    val repository: TaskRepository
+    val repository: TaskRepository,
+    @Autowired
+    val fileRepository: FileRepository
 ) : TasksApiService {
 
 
@@ -20,17 +26,9 @@ class TasksApiServiceImpl(
         return IdObjectDto(id)
     }
 
-    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow())
+    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow(), fileRepository)
 
-    override suspend fun tasksIdInputGet(id: Int): InputDto {
-        TODO("Implement me")
-    }
+    override suspend fun tasksIdInputGet(id: Int): MultiInputDto = repository.findById(id).orElseThrow().readInputs(fileRepository, true)
 
-    override suspend fun tasksIdPut(id: Int, id2: Int, timestamp: java.time.OffsetDateTime, input: InputDto, user: UserDto, parameters: List<String>?, priority: String, benchmark: TaskBenchmarkDto?): IdObjectDto {
-        TODO("Implement me")
-    }
-
-    override suspend fun tasksPost(id: Int, timestamp: java.time.OffsetDateTime, input: InputDto, user: UserDto, parameters: List<String>?, priority: String, benchmark: TaskBenchmarkDto?): IdObjectDto {
-        TODO("Implement me")
-    }
+    override suspend fun tasksPost(task: TaskDto): IdObjectDto = IdObjectDto(Task(task, fileRepository).id)
 }

@@ -2,6 +2,7 @@ package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import hu.bme.mit.theta.restapi.model.entities.Task
+import hu.bme.mit.theta.restapi.repository.FileRepository
 import javax.validation.Valid
 
 /**
@@ -21,7 +22,7 @@ data class TaskDto(
     @field:JsonProperty("timestamp", required = true) val timestamp: java.time.OffsetDateTime? = null,
 
     @field:Valid
-    @field:JsonProperty("input", required = true) val input: InputDto,
+    @field:JsonProperty("input", required = true) val input: MultiInputDto,
 
     @field:Valid
     @field:JsonProperty("user", required = true) val user: UserDto? = null,
@@ -34,10 +35,10 @@ data class TaskDto(
     @field:JsonProperty("benchmark") val benchmark: TaskBenchmarkDto? = null
 ) {
 
-    constructor(task: Task) : this(
+    constructor(task: Task, fileRepository: FileRepository) : this(
         id = task.id,
         timestamp = task.timestamp,
-        InputDto(task.inputName),
+        task.readInputs(fileRepository),
         UserDto(id = task.userId),
         task.parameters,
         task.priority,
