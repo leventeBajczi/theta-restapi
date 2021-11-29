@@ -6,8 +6,6 @@ import hu.bme.mit.theta.restapi.model.dtos.TaskDto
 import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 @Service
@@ -19,7 +17,7 @@ class TasksApiServiceImpl(
 ) : TasksApiService {
 
 
-    override fun tasksGet(): Flow<TaskDto> = flow { repository.findAll(); }
+    override suspend fun tasksGet(): List<TaskDto> = repository.findAll().map { TaskDto(it, fileRepository) }
 
     override suspend fun tasksIdDelete(id: Int): IdObjectDto {
         repository.deleteById(id)

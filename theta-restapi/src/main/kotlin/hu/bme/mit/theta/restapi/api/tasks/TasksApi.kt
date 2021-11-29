@@ -4,7 +4,6 @@ package hu.bme.mit.theta.restapi.api.tasks
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.MultiInputDto
 import hu.bme.mit.theta.restapi.model.dtos.TaskDto
-import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,7 +21,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks"],
         produces = ["application/json"]
     )
-    fun tasksGet(): ResponseEntity<Flow<TaskDto>> {
+    suspend fun tasksGet(): ResponseEntity<List<TaskDto>> {
         return ResponseEntity(service.tasksGet(), HttpStatus.valueOf(200))
     }
 

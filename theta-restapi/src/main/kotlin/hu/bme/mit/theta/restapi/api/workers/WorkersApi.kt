@@ -20,7 +20,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers"],
         produces = ["application/json"]
     )
-    fun workersGet(): ResponseEntity<Flow<WorkerDto>> {
+    suspend fun workersGet(): ResponseEntity<List<WorkerDto>> {
         return ResponseEntity(service.workersGet(), HttpStatus.valueOf(200))
     }
 

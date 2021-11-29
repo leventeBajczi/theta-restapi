@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import hu.bme.mit.theta.restapi.model.entities.User
 
 /**
  * 
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param permissions 
  * @param quotas 
  */
-data class UserDto(
+data class UserDto  (
 
     @field:JsonProperty("id", required = true) val id: Int? = null,
 
@@ -19,6 +20,15 @@ data class UserDto(
 
     @field:JsonProperty("quotas") val quotas: ResourcesDto? = null
 ) {
+
+    constructor(user: User) : this(
+        id = user.id,
+        name = user.name,
+        permissions = user.permissions,
+        quotas = ResourcesDto(
+            logicalCpu = user.logicalCpuQuota,
+            ramM = user.ramMbQuota,
+            timeoutS = user.timeshareSQuota)) {}
 
     /**
     * 

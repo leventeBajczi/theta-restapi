@@ -2,11 +2,10 @@ package hu.bme.mit.theta.restapi.api.users
 
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
-import kotlinx.coroutines.flow.Flow
 
 interface UsersApiService {
 
-    fun usersGet(): Flow<UserDto>
+    suspend fun usersGet(): List<UserDto>
 
     suspend fun usersIdDelete(id: Int): IdObjectDto
 

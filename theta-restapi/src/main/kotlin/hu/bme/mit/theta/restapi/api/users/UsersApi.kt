@@ -2,7 +2,6 @@ package hu.bme.mit.theta.restapi.api.users
 
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
-import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +19,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         value = ["/users"],
         produces = ["application/json"]
     )
-    fun usersGet(): ResponseEntity<Flow<UserDto>> {
+    suspend fun usersGet(): ResponseEntity<List<UserDto>> {
         return ResponseEntity(service.usersGet(), HttpStatus.valueOf(200))
     }
 

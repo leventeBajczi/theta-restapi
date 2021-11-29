@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import hu.bme.mit.theta.restapi.model.entities.Worker
 
 /**
  * 
@@ -16,6 +17,12 @@ data class WorkerDto(
 
     @field:JsonProperty("name") val name: String? = null
 ) {
+
+    constructor(worker: Worker) : this(
+        id = worker.id,
+        address = worker.address,
+        name = worker.name
+    )
 
 }
 

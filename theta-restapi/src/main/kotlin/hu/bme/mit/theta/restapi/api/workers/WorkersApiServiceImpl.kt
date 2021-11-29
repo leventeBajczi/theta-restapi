@@ -2,28 +2,23 @@ package hu.bme.mit.theta.restapi.api.workers
 
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
-import kotlinx.coroutines.flow.Flow;
+import hu.bme.mit.theta.restapi.model.entities.Worker
+import hu.bme.mit.theta.restapi.repository.WorkerRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 @Service
-class WorkersApiServiceImpl : WorkersApiService {
+class WorkersApiServiceImpl(@Autowired val repository: WorkerRepository) : WorkersApiService {
 
-    override fun workersGet(): Flow<WorkerDto> {
-        TODO("Implement me")
-    }
+    override suspend fun workersGet(): List<WorkerDto> = repository.findAll().map { WorkerDto(it) }
 
     override suspend fun workersIdDelete(id: Int): IdObjectDto {
-        TODO("Implement me")
+        repository.deleteById(id)
+        return IdObjectDto(id)
     }
 
-    override suspend fun workersIdGet(id: Int): WorkerDto {
-        TODO("Implement me")
-    }
+    override suspend fun workersIdGet(id: Int): WorkerDto = WorkerDto(repository.findById(id).orElseThrow())
 
-    override suspend fun workersIdPut(workerDto: WorkerDto): IdObjectDto {
-        TODO("Implement me")
-    }
+    override suspend fun workersIdPut(workerDto: WorkerDto): IdObjectDto = IdObjectDto(repository.save(Worker(workerDto)).id)
 
-    override suspend fun workersPost(workerDto: WorkerDto): IdObjectDto {
-        TODO("Implement me")
-    }
+    override suspend fun workersPost(workerDto: WorkerDto): IdObjectDto = IdObjectDto(repository.save(Worker(workerDto)).id)
 }
