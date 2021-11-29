@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.api
+package hu.bme.mit.theta.restapi.api.executables
 
 import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 

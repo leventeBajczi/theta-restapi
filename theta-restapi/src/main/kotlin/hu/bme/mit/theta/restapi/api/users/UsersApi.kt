@@ -1,7 +1,6 @@
-package hu.bme.mit.theta.restapi.api
+package hu.bme.mit.theta.restapi.api.users
 
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
-import hu.bme.mit.theta.restapi.model.dtos.ResourcesDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
 import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired

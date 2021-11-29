@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.api
+package hu.bme.mit.theta.restapi.api.users
 
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
