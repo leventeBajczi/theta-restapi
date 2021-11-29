@@ -51,14 +51,10 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         method = [RequestMethod.PUT],
         value = ["/workers/{id}"],
         produces = ["application/json"],
-        consumes = ["multipart/form-data"]
+        consumes = ["application/json"]
     )
-    suspend fun workersIdPut( @PathVariable("id") id: Int
-, @RequestParam(value="id", required=true) id2: Int
-, @RequestParam(value="address", required=true) address: String
-, @RequestParam(value="name", required=false) name: String?
-): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.workersIdPut(id, id2, address, name), HttpStatus.valueOf(200))
+    suspend fun workersIdPut( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
+        return ResponseEntity(service.workersIdPut(workerDto), HttpStatus.valueOf(200))
     }
 
 
@@ -66,12 +62,9 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         method = [RequestMethod.POST],
         value = ["/workers"],
         produces = ["application/json"],
-        consumes = ["multipart/form-data"]
+        consumes = ["application/json"]
     )
-    suspend fun workersPost( @RequestParam(value="id", required=true) id: Int
-, @RequestParam(value="address", required=true) address: String
-, @RequestParam(value="name", required=false) name: String?
-): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.workersPost(id, address, name), HttpStatus.valueOf(200))
+    suspend fun workersPost( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
+        return ResponseEntity(service.workersIdPut(workerDto), HttpStatus.valueOf(200))
     }
 }

@@ -44,13 +44,16 @@ components:
           type: string
           format: base64
     MultiInput:
-      type: array
-      items:
-        $ref: '#/components/schemas/SingleInput'
-    Input:
-      anyOf:
-        - $ref: '#/components/schemas/SingleInput'
-        - $ref: '#/components/schemas/MultiInput'
+      type: object
+      required: 
+        - inputs
+      properties:
+        inputs:
+          type: array
+          items:
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/SingleInput'
     StaticResources:
       type: object
       properties:
@@ -66,6 +69,7 @@ components:
         timeout_s:
           type: integer
     Resources:
+      type: object
       allOf:
         - $ref: '#/components/schemas/StaticResources'
         - $ref: '#/components/schemas/DynamicResources'
@@ -86,8 +90,9 @@ components:
           readOnly: true
           format: date-time
         input:
+          type: object
           allOf:
-            - $ref: '#/components/schemas/Input'
+            - $ref: '#/components/schemas/MultiInput'
           writeOnly: true
         parameters:
           type: array
@@ -102,6 +107,7 @@ components:
           default:
             "BEST_EFFORT"
         user:
+          type: object
           allOf:
             - $ref: '#/components/schemas/User'
           readOnly: true
@@ -181,14 +187,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/Task'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Task'
       responses: 
         '200':
          description: "Query OK"
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
         '400':
@@ -211,7 +221,9 @@ paths:
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Task'
         '401':
           description: "Unauthorized"
         '404':
@@ -226,30 +238,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
-    put:
-      tags:
-        - "tasks"
-      description: Updates a verification task (only available until the task is not started)
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Task'
-      responses: 
-        '200':
-          description: "Query OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IdObject'
-        '401':
-          description: "Unauthorized"
-        '400':
-          description: "Bad request"
   /tasks/{id}/input:
     parameters:
       - in: "path"
@@ -268,7 +261,9 @@ paths:
          content:
             multipart/form-data:
               schema:
-                $ref: '#/components/schemas/Input'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/MultiInput'
         '401':
           description: "Unauthorized"
         '404':
@@ -285,7 +280,9 @@ paths:
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticResources'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/StaticResources'
         '401':
           description: "Unauthorized"
           
@@ -300,7 +297,9 @@ paths:
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
         '401':
           description: "Unauthorized"
     put:
@@ -312,14 +311,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
       responses:
         '200':
          description: "Query OK"
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
         '401':
           description: "Unauthorized"
           
@@ -334,7 +337,9 @@ paths:
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
         '401':
           description: "Unauthorized"
     put:
@@ -346,14 +351,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
       responses:
         '200':
          description: "Query OK"
          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Executable'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Executable'
         '401':
           description: "Unauthorized"
         '400':
@@ -372,7 +381,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/User'
         '401':
           description: "Unauthorized"
     post:
@@ -384,14 +395,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/User'
       responses: 
         '200':
           description: "Query OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
         '400':
@@ -414,7 +429,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/User'
         '401':
           description: "Unauthorized"
         '404':
@@ -429,7 +446,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
     put:
@@ -441,14 +460,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/User'
       responses: 
         '200':
           description: "Query OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
         '400':
@@ -467,7 +490,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Worker'
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/Worker'
         '401':
           description: "Unauthorized"
     post:
@@ -479,14 +504,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/Worker'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Worker'
       responses: 
         '200':
           description: "Query OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
         '400':
@@ -509,7 +538,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Worker'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Worker'
         '401':
           description: "Unauthorized"
         '404':
@@ -524,7 +555,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
     put:
@@ -536,14 +569,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-                $ref: '#/components/schemas/Worker'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Worker'
       responses: 
         '200':
           description: "Query OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IdObject'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/IdObject'
         '401':
           description: "Unauthorized"
         '400':

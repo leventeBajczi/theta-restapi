@@ -6,7 +6,6 @@ import hu.bme.mit.theta.restapi.model.dtos.TaskDto
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import org.hibernate.annotations.CreationTimestamp
 import java.io.File
-import java.time.OffsetDateTime
 import javax.persistence.*
 
 @Entity
@@ -16,7 +15,7 @@ data class Task(
     val id: Int = 0,
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    val timestamp: OffsetDateTime = OffsetDateTime.now(),
+    val timestamp: java.util.Date = java.util.Date(),
     @ElementCollection
     val inputIds: List<Int> = emptyList(),
     @ElementCollection
@@ -34,7 +33,7 @@ data class Task(
             val file = File.createTempFile(it.name.substring(0, it.name.lastIndexOf(".")), it.name.substring(it.name.lastIndexOf(".") + 1))
             file.writeText(it.content!!)
             fileRepository.save(File(name = it.name, fullPath = file.absolutePath)).id }.toList(),
-        userId = task.user?.id!!,
+        userId = task.userId,
         parameters = task.parameters ?: emptyList(),
         priority = task.priority ?: TaskDto.Priority.BESTEFFORT,
         logicalCpu = task.benchmark?.resources?.logicalCpu ?: -1,

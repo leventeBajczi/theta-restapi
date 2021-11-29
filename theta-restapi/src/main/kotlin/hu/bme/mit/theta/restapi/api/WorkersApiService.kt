@@ -12,7 +12,7 @@ interface WorkersApiService {
 
     suspend fun workersIdGet(id: Int): WorkerDto
 
-    suspend fun workersIdPut(id: Int, id2: Int, address: String, name: String?): IdObjectDto
+    suspend fun workersIdPut(workerDto: WorkerDto): IdObjectDto
 
-    suspend fun workersPost(id: Int, address: String, name: String?): IdObjectDto
+    suspend fun workersPost(workerDto: WorkerDto): IdObjectDto
 }

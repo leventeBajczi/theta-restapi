@@ -27,15 +27,17 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
-    id("org.springframework.boot") version "2.2.0.M3"
-    id("io.spring.dependency-management") version "1.0.5.RELEASE"
+    id("org.springframework.boot") version "2.6.0"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
 dependencies {
     val kotlinxCoroutinesVersion="1.6.0-RC"
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-webflux")
+    compile("com.h2database:h2:1.3.148")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     compile("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinxCoroutinesVersion")

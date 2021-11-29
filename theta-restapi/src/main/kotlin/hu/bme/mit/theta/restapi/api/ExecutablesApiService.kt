@@ -6,9 +6,9 @@ interface ExecutablesApiService {
 
     suspend fun runexecGet(): ExecutableDto
 
-    suspend fun runexecPut(version: String, description: String, binary: String, commit: String?): ExecutableDto
+    suspend fun runexecPut(executableDto: ExecutableDto): ExecutableDto
 
     suspend fun thetaGet(): ExecutableDto
 
-    suspend fun thetaPut(version: String, description: String, binary: String, commit: String?): ExecutableDto
+    suspend fun thetaPut(executableDto: ExecutableDto): ExecutableDto
 }

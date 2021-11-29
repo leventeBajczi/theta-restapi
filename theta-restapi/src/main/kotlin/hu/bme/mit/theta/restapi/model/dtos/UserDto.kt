@@ -1,7 +1,6 @@
 package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import javax.validation.Valid
 
 /**
  * 
@@ -18,7 +17,6 @@ data class UserDto(
 
     @field:JsonProperty("permissions") val permissions: List<Permissions>? = null,
 
-    @field:Valid
     @field:JsonProperty("quotas") val quotas: ResourcesDto? = null
 ) {
 

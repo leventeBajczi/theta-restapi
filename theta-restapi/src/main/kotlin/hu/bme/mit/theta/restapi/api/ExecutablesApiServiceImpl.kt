@@ -1,24 +1,28 @@
 package hu.bme.mit.theta.restapi.api
 
 import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
+import hu.bme.mit.theta.restapi.utils.iface.ExecutableUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ExecutablesApiServiceImpl : ExecutablesApiService {
+class ExecutablesApiServiceImpl(
+    @Autowired val executableUtils: ExecutableUtils
+) : ExecutablesApiService {
 
     override suspend fun runexecGet(): ExecutableDto {
-        TODO("Implement me")
+        return executableUtils.getStatus("runexec.zip")
     }
 
-    override suspend fun runexecPut(version: String, description: String, binary: String, commit: String?): ExecutableDto {
-        TODO("Implement me")
+    override suspend fun runexecPut(executableDto: ExecutableDto): ExecutableDto {
+        return executableUtils.updateExecutable("runexec.zip", executableDto)
     }
 
     override suspend fun thetaGet(): ExecutableDto {
-        TODO("Implement me")
+        return executableUtils.getStatus("theta.zip")
     }
 
-    override suspend fun thetaPut(version: String, description: String, binary: String, commit: String?): ExecutableDto {
-        TODO("Implement me")
+    override suspend fun thetaPut(executableDto: ExecutableDto): ExecutableDto {
+        return executableUtils.updateExecutable("theta.zip", executableDto)
     }
 }

@@ -19,11 +19,11 @@ class WorkersApiServiceImpl : WorkersApiService {
         TODO("Implement me")
     }
 
-    override suspend fun workersIdPut(id: Int, id2: Int, address: String, name: String?): IdObjectDto {
+    override suspend fun workersIdPut(workerDto: WorkerDto): IdObjectDto {
         TODO("Implement me")
     }
 
-    override suspend fun workersPost(id: Int, address: String, name: String?): IdObjectDto {
+    override suspend fun workersPost(workerDto: WorkerDto): IdObjectDto {
         TODO("Implement me")
     }
 }

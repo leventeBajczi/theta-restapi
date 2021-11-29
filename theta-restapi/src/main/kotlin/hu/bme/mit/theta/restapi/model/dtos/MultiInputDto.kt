@@ -1,7 +1,6 @@
 package hu.bme.mit.theta.restapi.model.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import javax.validation.Valid
 
 /**
  *
@@ -9,7 +8,6 @@ import javax.validation.Valid
  */
 data class MultiInputDto(
 
-    @field:Valid
     @field:JsonProperty("inputs", required = true) val inputs: List<SingleInputDto>
 ) {
 

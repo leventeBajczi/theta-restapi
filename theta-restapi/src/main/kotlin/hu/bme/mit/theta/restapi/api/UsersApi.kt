@@ -52,15 +52,10 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         method = [RequestMethod.PUT],
         value = ["/users/{id}"],
         produces = ["application/json"],
-        consumes = ["multipart/form-data"]
+        consumes = ["application/json"]
     )
-    suspend fun usersIdPut( @PathVariable("id") id: Int
-, @RequestParam(value="id", required=true) id2: Int
-, @RequestParam(value="name", required=true) name: String
-, @RequestParam(value="permissions", required=false) permissions: List<String>?
-, @RequestParam(value="quotas", required=false) quotas: ResourcesDto?
-): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.usersIdPut(id, id2, name, permissions, quotas), HttpStatus.valueOf(200))
+    suspend fun usersIdPut( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
+        return ResponseEntity(service.usersIdPut(userDto), HttpStatus.valueOf(200))
     }
 
 
@@ -68,13 +63,9 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         method = [RequestMethod.POST],
         value = ["/users"],
         produces = ["application/json"],
-        consumes = ["multipart/form-data"]
+        consumes = ["application/json"]
     )
-    suspend fun usersPost( @RequestParam(value="id", required=true) id: Int
-, @RequestParam(value="name", required=true) name: String
-, @RequestParam(value="permissions", required=false) permissions: List<String>?
-, @RequestParam(value="quotas", required=false) quotas: ResourcesDto?
-): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.usersPost(id, name, permissions, quotas), HttpStatus.valueOf(200))
+    suspend fun usersPost( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
+        return ResponseEntity(service.usersIdPut(userDto), HttpStatus.valueOf(200))
     }
 }
