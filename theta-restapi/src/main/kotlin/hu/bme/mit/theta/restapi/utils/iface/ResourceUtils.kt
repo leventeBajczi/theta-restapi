@@ -1,7 +1,7 @@
 package hu.bme.mit.theta.restapi.utils.iface
 
-import hu.bme.mit.theta.restapi.model.dtos.ResourcesDto
+import hu.bme.mit.theta.restapi.model.dtos.StaticResourcesDto
 
 interface ResourceUtils {
-    fun getResources() : ResourcesDto
+    fun getResources() : StaticResourcesDto
 }

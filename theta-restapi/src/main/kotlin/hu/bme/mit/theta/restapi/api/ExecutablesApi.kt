@@ -31,7 +31,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         method = [RequestMethod.PUT],
         value = ["/runexec"],
         produces = ["application/json"],
-        consumes = ["application/*"]
+        consumes = ["multipart/form-data"]
     )
     suspend fun runexecPut(
         @RequestParam(name = "binary", required = true) binary: MultipartFile,
