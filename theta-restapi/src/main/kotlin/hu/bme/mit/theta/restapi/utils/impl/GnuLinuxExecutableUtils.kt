@@ -1,17 +1,21 @@
 package hu.bme.mit.theta.restapi.utils.impl
 
+import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 import hu.bme.mit.theta.restapi.utils.iface.ExecutableUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 @Component
-class GnuLinuxExecutableUtils(val sync: Any = Any()) : ExecutableUtils {
+class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) : ExecutableUtils {
+    val sync: Any = Any()
+
     override fun getStatus(s: String): ExecutableDto {
         synchronized(sync) {
-            val folder = File(s.substring(0, s.lastIndexOf(".")))
+            val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
             if (!(folder.exists() && folder.isDirectory)) {
                 throw NoSuchElementException(s + " has no installed candidate.")
             }
@@ -36,12 +40,12 @@ class GnuLinuxExecutableUtils(val sync: Any = Any()) : ExecutableUtils {
 
     override fun updateExecutable(s: String, executable: ExecutableDto) : ExecutableDto{
         synchronized(sync) {
-            val folder = File(s.substring(0, s.lastIndexOf(".")))
+            val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
             if (folder.exists() && folder.isDirectory) {
                 folder.deleteRecursively()
             }
             folder.mkdirs()
-            val file = File(s)
+            val file = File(config.executables + File.separator + s)
             file.delete()
             file.writeBytes(executable.binaryBytes!!)
             "unzip ${file.absolutePath} -d ${folder.absolutePath}".runCommand(1, TimeUnit.MINUTES)
