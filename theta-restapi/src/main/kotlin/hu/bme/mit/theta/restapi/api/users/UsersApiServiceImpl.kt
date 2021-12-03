@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.restapi.api.users
 
+import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
 import hu.bme.mit.theta.restapi.model.entities.User
@@ -16,7 +17,7 @@ class UsersApiServiceImpl(@Autowired val repository: UserRepository) : UsersApiS
         return IdObjectDto(id)
     }
 
-    override suspend fun usersIdGet(id: Int): UserDto = UserDto(repository.findById(id).orElseThrow())
+    override suspend fun usersIdGet(id: Int): UserDto = UserDto(repository.findById(id).orElseThrow {NoSuchElement()})
 
     override suspend fun usersIdPut(userDto: UserDto): IdObjectDto = IdObjectDto(repository.save(User(userDto)).id)
 
