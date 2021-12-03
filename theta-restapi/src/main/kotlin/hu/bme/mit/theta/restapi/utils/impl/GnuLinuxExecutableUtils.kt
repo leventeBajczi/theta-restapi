@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.restapi.utils.impl
 
 import hu.bme.mit.theta.restapi.ApplicationConfiguration
+import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
 import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 import hu.bme.mit.theta.restapi.utils.iface.ExecutableUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,7 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
         synchronized(sync) {
             val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
             if (!(folder.exists() && folder.isDirectory)) {
-                throw NoSuchElementException(s + " has no installed candidate.")
+                throw NoSuchElement(s + " has no installed candidate.")
             }
             val version = try {
                 File(folder.path + "." + "version.txt").readText()
