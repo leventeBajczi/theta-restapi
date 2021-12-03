@@ -7,7 +7,7 @@ import javax.persistence.*
 data class User(
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    val id: Int,
+    val id: Int = 0,
     val name: String,
     @ElementCollection
     val permissions: List<UserDto.Permissions> = emptyList(),
@@ -17,7 +17,7 @@ data class User(
 ) {
 
     constructor(userDto: UserDto) : this(
-        id = userDto.id!!,
+        id = userDto.id ?: 0,
         name = userDto.name!!,
         permissions = userDto.permissions ?: emptyList(),
         logicalCpuQuota = userDto.quotas?.logicalCpu ?: -1,

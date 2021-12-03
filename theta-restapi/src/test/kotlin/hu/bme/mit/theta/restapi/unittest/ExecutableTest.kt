@@ -25,12 +25,12 @@ class ExecutableTest(
     @Test
     fun testEmptyGet(@TempDir tempDir: Path) {
         config.executables = tempDir.absolutePathString()
-        Assertions.assertThrows(NoSuchElement.javaClass) {
+        Assertions.assertThrows(NoSuchElement::class.java) {
             runBlocking {
                  executablesApiService.thetaGet()
             }
         }
-        Assertions.assertThrows(NoSuchElement.javaClass) {
+        Assertions.assertThrows(NoSuchElement::class.java) {
             runBlocking {
                  executablesApiService.runexecGet()
             }

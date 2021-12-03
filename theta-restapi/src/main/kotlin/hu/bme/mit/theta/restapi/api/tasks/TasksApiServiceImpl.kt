@@ -27,9 +27,9 @@ class TasksApiServiceImpl(
         return IdObjectDto(id)
     }
 
-    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow { NoSuchElement }, fileRepository)
+    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow { NoSuchElement() }, fileRepository)
 
-    override suspend fun tasksIdInputGet(id: Int): MultiInputDto = repository.findById(id).orElseThrow { NoSuchElement }.readInputs(fileRepository, true)
+    override suspend fun tasksIdInputGet(id: Int): MultiInputDto = repository.findById(id).orElseThrow { NoSuchElement() }.readInputs(fileRepository, true)
 
     override suspend fun tasksPost(task: TaskDto): IdObjectDto {
         val savedTask = repository.save(Task(task, fileRepository))
