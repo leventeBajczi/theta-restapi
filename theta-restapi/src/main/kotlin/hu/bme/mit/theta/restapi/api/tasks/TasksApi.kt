@@ -1,11 +1,11 @@
 package hu.bme.mit.theta.restapi.api.tasks
 
 
+import hu.bme.mit.theta.restapi.api.handleRESTStatus
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.MultiInputDto
 import hu.bme.mit.theta.restapi.model.dtos.TaskDto
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -22,7 +22,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksGet(): ResponseEntity<List<TaskDto>> {
-        return ResponseEntity(service.tasksGet(), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.tasksGet()}
     }
 
 
@@ -33,7 +33,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     )
     suspend fun tasksIdDelete( @PathVariable("id") id: Int
     ): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.tasksIdDelete(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.tasksIdDelete(id)}
     }
 
 
@@ -44,7 +44,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     )
     suspend fun tasksIdGet( @PathVariable("id") id: Int
     ): ResponseEntity<TaskDto> {
-        return ResponseEntity(service.tasksIdGet(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.tasksIdGet(id)}
     }
 
 
@@ -55,7 +55,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     )
     suspend fun tasksIdInputGet( @PathVariable("id") id: Int
     ): ResponseEntity<MultiInputDto> {
-        return ResponseEntity(service.tasksIdInputGet(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.tasksIdInputGet(id)}
     }
 
 
@@ -67,6 +67,6 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
     )
     suspend fun tasksPost( @RequestBody taskDto: TaskDto
     ): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.tasksPost(taskDto), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.tasksPost(taskDto)}
     }
 }

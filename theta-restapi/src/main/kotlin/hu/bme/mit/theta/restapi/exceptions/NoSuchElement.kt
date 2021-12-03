@@ -1,4 +1,4 @@
 package hu.bme.mit.theta.restapi.exceptions
 
-class NoSuchElement(val msg: String = "") : NoSuchElementException(msg), ThetaRESTException {
+class NoSuchElement(msg: String = "") : ThetaRESTException(msg) {
 }

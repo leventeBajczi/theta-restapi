@@ -1,3 +1,3 @@
 package hu.bme.mit.theta.restapi.exceptions
 
-sealed interface ThetaRESTException
+sealed class ThetaRESTException(msg: String? = null) : Exception(msg)

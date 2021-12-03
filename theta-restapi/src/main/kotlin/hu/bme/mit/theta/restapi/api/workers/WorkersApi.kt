@@ -1,10 +1,9 @@
 package hu.bme.mit.theta.restapi.api.workers
 
+import hu.bme.mit.theta.restapi.api.handleRESTStatus
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
-import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -21,7 +20,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersGet(): ResponseEntity<List<WorkerDto>> {
-        return ResponseEntity(service.workersGet(), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.workersGet()}
     }
 
 
@@ -32,7 +31,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
     )
     suspend fun workersIdDelete( @PathVariable("id") id: Int
 ): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.workersIdDelete(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.workersIdDelete(id)}
     }
 
 
@@ -43,7 +42,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
     )
     suspend fun workersIdGet( @PathVariable("id") id: Int
 ): ResponseEntity<WorkerDto> {
-        return ResponseEntity(service.workersIdGet(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.workersIdGet(id)}
     }
 
 
@@ -54,7 +53,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         consumes = ["application/json"]
     )
     suspend fun workersIdPut( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.workersIdPut(workerDto), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.workersIdPut(workerDto)}
     }
 
 
@@ -65,6 +64,6 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         consumes = ["application/json"]
     )
     suspend fun workersPost( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.workersIdPut(workerDto), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.workersIdPut(workerDto)}
     }
 }

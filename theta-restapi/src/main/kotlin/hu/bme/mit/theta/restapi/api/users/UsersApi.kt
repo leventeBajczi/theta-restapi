@@ -1,9 +1,9 @@
 package hu.bme.mit.theta.restapi.api.users
 
+import hu.bme.mit.theta.restapi.api.handleRESTStatus
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.UserDto
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -20,7 +20,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"]
     )
     suspend fun usersGet(): ResponseEntity<List<UserDto>> {
-        return ResponseEntity(service.usersGet(), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.usersGet()}
     }
 
 
@@ -31,7 +31,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
     )
     suspend fun usersIdDelete( @PathVariable("id") id: Int
 ): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.usersIdDelete(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.usersIdDelete(id)}
     }
 
 
@@ -42,7 +42,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
     )
     suspend fun usersIdGet( @PathVariable("id") id: Int
 ): ResponseEntity<UserDto> {
-        return ResponseEntity(service.usersIdGet(id), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.usersIdGet(id)}
     }
 
 
@@ -53,7 +53,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         consumes = ["application/json"]
     )
     suspend fun usersIdPut( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.usersIdPut(userDto), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.usersIdPut(userDto)}
     }
 
 
@@ -64,6 +64,6 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         consumes = ["application/json"]
     )
     suspend fun usersPost( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
-        return ResponseEntity(service.usersIdPut(userDto), HttpStatus.valueOf(200))
+        return handleRESTStatus {service.usersIdPut(userDto)}
     }
 }
