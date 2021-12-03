@@ -30,7 +30,9 @@ data class Task(
 ) {
     constructor(task: TaskDto, fileRepository: FileRepository) : this(
         inputIds = task.input.inputs.map {
-            val file = File.createTempFile(it.name.substring(0, it.name.lastIndexOf(".")), it.name.substring(it.name.lastIndexOf(".") + 1))
+            val noExtensionName = if(it.name.contains('.')) it.name.substring(0, it.name.lastIndexOf(".")) else it.name
+            val extension = if(it.name.contains('.')) it.name.substring(it.name.lastIndexOf(".")+1) else ""
+            val file = File.createTempFile(noExtensionName, extension)
             file.writeText(it.content!!)
             fileRepository.save(File(name = it.name, fullPath = file.absolutePath)).id }.toList(),
         userId = task.userId,

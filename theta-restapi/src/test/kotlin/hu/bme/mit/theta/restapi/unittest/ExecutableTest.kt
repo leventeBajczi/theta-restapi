@@ -2,6 +2,7 @@ package hu.bme.mit.theta.restapi.unittest
 
 import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.api.executables.ExecutablesApiService
+import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
 import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
@@ -24,12 +25,12 @@ class ExecutableTest(
     @Test
     fun testEmptyGet(@TempDir tempDir: Path) {
         config.executables = tempDir.absolutePathString()
-        Assertions.assertThrows(java.util.NoSuchElementException::class.java) {
+        Assertions.assertThrows(NoSuchElement.javaClass) {
             runBlocking {
                  executablesApiService.thetaGet()
             }
         }
-        Assertions.assertThrows(java.util.NoSuchElementException::class.java) {
+        Assertions.assertThrows(NoSuchElement.javaClass) {
             runBlocking {
                  executablesApiService.runexecGet()
             }
