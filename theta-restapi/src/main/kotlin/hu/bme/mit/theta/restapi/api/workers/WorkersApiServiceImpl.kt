@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.restapi.api.workers
 
+import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
 import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
 import hu.bme.mit.theta.restapi.model.entities.Worker
@@ -16,7 +17,7 @@ class WorkersApiServiceImpl(@Autowired val repository: WorkerRepository) : Worke
         return IdObjectDto(id)
     }
 
-    override suspend fun workersIdGet(id: Int): WorkerDto = WorkerDto(repository.findById(id).orElseThrow())
+    override suspend fun workersIdGet(id: Int): WorkerDto = WorkerDto(repository.findById(id).orElseThrow{ NoSuchElement() })
 
     override suspend fun workersIdPut(workerDto: WorkerDto): IdObjectDto = IdObjectDto(repository.save(Worker(workerDto)).id)
 

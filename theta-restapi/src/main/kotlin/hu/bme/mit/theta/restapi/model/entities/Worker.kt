@@ -11,12 +11,12 @@ data class Worker(
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     val id: Int = 0,
-    val name: String,
+    val name: String?,
     val address: String,
 ) {
     constructor(workerDto: WorkerDto) : this(
         id = workerDto.id ?: 0,
         address = workerDto.address,
-        name = workerDto.name!!
+        name = workerDto.name
     )
 }
