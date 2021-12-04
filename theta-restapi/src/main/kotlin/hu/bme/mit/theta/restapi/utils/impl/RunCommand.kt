@@ -1,20 +1,17 @@
 package hu.bme.mit.theta.restapi.utils.impl
 
-import java.io.IOException
+import java.io.File
 import java.util.concurrent.TimeUnit
 
-fun Array<String>.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): String? {
-    try {
-        val proc = ProcessBuilder(*this)
-            .redirectOutput(ProcessBuilder.Redirect.PIPE)
-            .redirectError(ProcessBuilder.Redirect.PIPE)
-            .start()
+fun Array<String>.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> {
+    val stdoutFile = File.createTempFile("stdout", ".txt")
+    val stderrFile = File.createTempFile("stderr", ".txt")
+    val proc = ProcessBuilder(*this)
+        .redirectOutput(ProcessBuilder.Redirect.appendTo(stdoutFile))
+        .redirectError(ProcessBuilder.Redirect.appendTo(stderrFile))
+        .start()
 
-        if(timeout > 0) proc.waitFor(timeout, timeUnit)
-        return proc.inputStream.bufferedReader().readText()
-    } catch(e: IOException) {
-        e.printStackTrace()
-        return null
-    }
+    if(timeout > 0) proc.waitFor(timeout, timeUnit)
+    return Pair(stdoutFile, stderrFile)
 }
-fun String.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): String? = arrayOf(this).runCommand(timeout, timeUnit)
+fun String.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> = arrayOf(this).runCommand(timeout, timeUnit)

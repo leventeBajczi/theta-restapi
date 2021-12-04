@@ -7,15 +7,22 @@ import hu.bme.mit.theta.restapi.model.dtos.TaskDto
 import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
+import hu.bme.mit.theta.restapi.utils.iface.ThetaRunner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.concurrent.Executors
+
 @Service
 class TasksApiServiceImpl(
     @Autowired
     val repository: TaskRepository,
     @Autowired
-    val fileRepository: FileRepository
+    val fileRepository: FileRepository,
+    @Autowired
+    val thetaRunner: ThetaRunner,
 ) : TasksApiService {
+
+    val executorService = Executors.newFixedThreadPool(1)
 
 
     override suspend fun tasksGet(): List<TaskDto> = repository.findAll().map { TaskDto(it, fileRepository) }
@@ -33,6 +40,7 @@ class TasksApiServiceImpl(
 
     override suspend fun tasksPost(task: TaskDto): IdObjectDto {
         val savedTask = repository.save(Task(task, fileRepository))
+        executorService.submit { thetaRunner.runTask(savedTask) }
         return IdObjectDto(savedTask.id)
     }
 }

@@ -58,4 +58,8 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
         }
 
     }
+
+    override fun getExecutableWithPath(s: String): String {
+        return config.executables + File.separator + s.substring(0, s.lastIndexOf(".")) + File.separator + "run.sh"
+    }
 }

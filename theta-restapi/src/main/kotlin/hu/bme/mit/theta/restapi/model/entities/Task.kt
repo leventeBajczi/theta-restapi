@@ -27,6 +27,10 @@ data class Task(
     val logicalCpu: Int = -1,
     val ramMb: Int = -1,
     val timeoutS: Int = -1,
+    val usedRamMb: Int? = null,
+    val usedTimeS: Int? = null,
+    val stdout: String? = null,
+    val stderr: String? = null,
 ) {
     constructor(task: TaskDto, fileRepository: FileRepository) : this(
         inputIds = task.input.inputs.map {
