@@ -36,7 +36,12 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
             } catch (e: IOException) {
                 "unkown"
             }
-            return OutExecutableDto(version = version, commit = commit, description = description)
+            val relativePath = try {
+                File(folder.path + "." + "relativePath.txt").readText()
+            } catch (e: IOException) {
+                "unkown"
+            }
+            return OutExecutableDto(version = version, commit = commit, description = description, relativePath = relativePath)
         }
     }
 
@@ -52,6 +57,7 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
             file.writeBytes(executable.binaryBytes!!)
             arrayOf("unzip",file.absolutePath,"-d",folder.absolutePath).runCommand(1, TimeUnit.MINUTES)
             File(folder.path + "." + "description.txt").writeText(executable.description)
+            File(folder.path + "." + "relativePath.txt").writeText(executable.relativePath)
             if(executable.commit != null) File(folder.path + "." + "commit.txt").writeText(executable.commit)
             File(folder.path + "." + "version.txt").writeText(executable.version)
 
@@ -61,6 +67,11 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
     }
 
     override fun getExecutableWithPath(s: String): String {
-        return config.executables + File.separator + s.substring(0, s.lastIndexOf(".")) + File.separator + "run.sh"
+        val path = config.executables +
+                File.separator +
+                s.substring(0, s.lastIndexOf("."))
+        return path +
+                File.separator +
+                File("$path.relativePath.txt").readText()
     }
 }

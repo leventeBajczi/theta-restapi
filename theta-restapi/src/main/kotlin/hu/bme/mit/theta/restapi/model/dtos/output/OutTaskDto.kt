@@ -30,7 +30,9 @@ data class OutTaskDto(
 
     @field:JsonProperty("priority") val priority: Priority? = Priority.BESTEFFORT,
 
-    @field:JsonProperty("benchmark") val benchmark: OutTaskBenchmarkDto? = null
+    @field:JsonProperty("benchmark") val benchmark: OutTaskBenchmarkDto? = null,
+
+    @field:JsonProperty("doneStatus") val doneStatus: OutStatusDto? = null
 ) {
 
     constructor(task: Task, fileRepository: FileRepository) : this(
@@ -40,7 +42,8 @@ data class OutTaskDto(
         task.userId,
         task.parameters,
         task.priority,
-        OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS))
+        OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
+        doneStatus = if(task.stdout != null) OutStatusDto(task.usedRamMb, task.usedTimeS, task.stdout.readText(), task.stderr?.readText()) else null
     ) {}
 
 }

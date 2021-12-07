@@ -38,10 +38,11 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam(name = "binary", required = true) binary: MultipartFile,
         @RequestParam(name = "version", required = true) version: String,
         @RequestParam(name = "commit", required = false) commit: String?,
+        @RequestParam("relativePath", required = true) relativePath: String,
         @RequestParam(name = "description", required = true) description: String,
     ): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {service.runexecPut(
-            InExecutableDto(version, description, binaryBytes = binary.bytes, commit = commit)
+            InExecutableDto(version, description, binaryBytes = binary.bytes, commit = commit, relativePath = relativePath)
         )}
     }
 
@@ -66,11 +67,12 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam("binary", required=true) binary: MultipartFile,
         @RequestParam("version", required = true) version: String,
         @RequestParam("commit", required = false) commit: String?,
+        @RequestParam("relativePath", required = true) relativePath: String,
         @RequestParam("description", required = true) description: String,
     ): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {
             service.thetaPut(
-                InExecutableDto(version = version, description = description, binaryBytes = binary.bytes, commit = commit)
+                InExecutableDto(version = version, description = description, binaryBytes = binary.bytes, commit = commit, relativePath = relativePath)
             )
         }
     }

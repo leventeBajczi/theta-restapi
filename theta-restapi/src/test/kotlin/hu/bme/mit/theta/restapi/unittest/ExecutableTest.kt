@@ -45,11 +45,13 @@ class ExecutableTest(
             description = "SampleDescription",
             binaryBytes = "BinaryContent".toByteArray(),
             commit = "SampleCommit",
+            relativePath = "RelativePath"
         )
         val executableNoBinary = InExecutableDto(
             version = "SampleVersion",
             description = "SampleDescription",
             commit = "SampleCommit",
+            relativePath = "RelativePath"
         )
         runBlocking {
             executablesApiService.thetaPut(executable)

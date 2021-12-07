@@ -28,7 +28,7 @@ class DirectThetaRunner(
         val stopwatch = StopWatch()
         stopwatch.start()
         val (stdout, stderr) = command.runCommand(timeLimit.toLong(), TimeUnit.SECONDS)
-        val newTask: Task = task.copy(usedTimeS = stopwatch.totalTimeSeconds.toInt(), stderr = stderr.readText(), stdout = stdout.readText())
+        val newTask: Task = task.copy(usedTimeS = stopwatch.totalTimeSeconds.toInt(), stderr = stderr, stdout = stdout)
         taskRepository.save(newTask)
     }
 }

@@ -35,6 +35,7 @@ class IntegrationTest(
             .file("binary", thetaZipBytes)
             .param("commit", "SampleCommit")
             .param("version", "SampleVersion")
+            .param("relativePath", "theta/theta-start.sh")
             .param("description", "SampleDescription").with { request -> request.method = "PUT"; request }
         ).andExpect(status().isOk)
 
@@ -48,23 +49,21 @@ class IntegrationTest(
         ).andExpect(status().isOk).andDo {
             id =((it.asyncResult as ResponseEntity<*>).body as IdObjectDto).id
         }
-
         Assertions.assertNotNull(id)
-        // TODO: TaskDto should have Task's new attributes
 
         var done = false
         var counter = 10
         while(!done && counter > 0) {
             mockMvc.perform(get("/tasks/$id")).andDo {
-                val map =((it.asyncResult as ResponseEntity<*>).body as OutTaskDto)
-                if (true) {
+                val map =((it.asyncResult as ResponseEntity<*>).body as OutTaskDto?)
+                if (map?.doneStatus != null) {
                     done = true
-                    Assertions.assertTrue(("SafetyResult False" as String?)!!.contains("SafetyResult False"))
+                    Assertions.assertTrue(map.doneStatus?.stdout!!.contains("SafetyResult Unsafe"))
                 } else {
-                    Thread.sleep(500)
                     counter--
                 }
             }
+            Thread.sleep(500)
         }
         Assertions.assertTrue(counter > 0, "Task did not finish in the given timeframe.")
     }
