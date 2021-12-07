@@ -31,8 +31,9 @@ data class Task(
     val ramMb: Int = -1,
     val timeoutS: Int = -1,
     val useRunexec: Boolean = false,
-    val usedRamMb: Int? = null,
-    val usedTimeS: Int? = null,
+    val usedRamMb: Double? = null,
+    val usedTimeS: Double? = null,
+    val usedCpuTimeS: Double? = null,
     val stdout: File? = null,
     val stderr: File? = null,
 ) {

@@ -43,7 +43,7 @@ data class OutTaskDto(
         task.parameters,
         task.priority,
         OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
-        doneStatus = if(task.stdout != null) OutStatusDto(task.usedRamMb, task.usedTimeS, task.stdout.readText(), task.stderr?.readText()) else null
+        doneStatus = if(task.stdout != null) OutStatusDto(task.usedRamMb, task.usedTimeS, task.usedCpuTimeS, task.stdout.readText(), task.stderr?.readText()) else null
     ) {}
 
 }

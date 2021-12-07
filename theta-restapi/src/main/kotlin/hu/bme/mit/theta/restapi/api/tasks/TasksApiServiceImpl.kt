@@ -9,9 +9,11 @@ import hu.bme.mit.theta.restapi.model.dtos.output.OutTaskDto
 import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
-import hu.bme.mit.theta.restapi.utils.iface.ThetaRunner
+import hu.bme.mit.theta.restapi.utils.impl.DirectThetaRunner
+import hu.bme.mit.theta.restapi.utils.impl.RunexecRunner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Service
@@ -21,12 +23,14 @@ class TasksApiServiceImpl(
     @Autowired
     val fileRepository: FileRepository,
     @Autowired
-    val thetaRunner: ThetaRunner,
+    val thetaRunner: DirectThetaRunner,
+    @Autowired
+    val runexecRunner: RunexecRunner,
     @Autowired
     val config: ApplicationConfiguration
 ) : TasksApiService {
 
-    val executorService = Executors.newFixedThreadPool(1)
+    val executorService: ExecutorService = Executors.newFixedThreadPool(1)
 
 
     override suspend fun tasksGet(): List<OutTaskDto> = repository.findAll().map { OutTaskDto(it, fileRepository) }
@@ -44,7 +48,11 @@ class TasksApiServiceImpl(
 
     override suspend fun tasksPost(task: InTaskDto): IdObjectDto {
         val savedTask = repository.save(Task(task, fileRepository, config))
-        executorService.submit { thetaRunner.runTask(savedTask) }
+        if(savedTask.useRunexec) {
+            executorService.submit { runexecRunner.runTask(savedTask) }
+        } else {
+            executorService.submit { thetaRunner.runTask(savedTask) }
+        }
         return IdObjectDto(savedTask.id)
     }
 }

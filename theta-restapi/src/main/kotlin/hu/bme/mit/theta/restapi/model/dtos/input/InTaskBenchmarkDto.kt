@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 /**
  * 
  * @param resources 
- * @param enabled 
+ * @param useRunexec
  */
 data class InTaskBenchmarkDto(
 
