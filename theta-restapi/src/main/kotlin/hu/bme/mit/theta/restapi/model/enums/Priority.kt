@@ -10,6 +10,8 @@ enum class Priority(val value: String) {
 
     @JsonProperty("MEDIUM") MEDIUM("MEDIUM"),
 
-    @JsonProperty("HIGH") HIGH("HIGH");
+    @JsonProperty("HIGH") HIGH("HIGH"),
+
+    @JsonProperty("NONE") NONE("NONE");
 
 }

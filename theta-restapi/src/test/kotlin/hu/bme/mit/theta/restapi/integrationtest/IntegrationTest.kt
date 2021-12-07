@@ -70,4 +70,51 @@ class IntegrationTest(
         Assertions.assertTrue(counter > 0, "Task did not finish in the given timeframe.")
         tempFolder.deleteRecursively()
     }
+
+
+    @Test
+    fun testRunexec() {
+        val tempFolder = File(this::class.java.getResource("/").path + File.separator + "tmp");
+        config.tmp = tempFolder.absolutePath
+        tempFolder.mkdirs()
+
+        config.executables = tempFolder.absolutePath
+        val thetaZipBytes = this::class.java.getResource("/benchexec.zip").readBytes()
+        mockMvc.perform(multipart("/theta")
+            .file("binary", thetaZipBytes)
+            .param("commit", "SampleCommit")
+            .param("version", "SampleVersion")
+            .param("relativePath", "benchexec/bin/runexec")
+            .param("description", "SampleDescription").with { request -> request.method = "PUT"; request }
+        ).andExpect(status().isOk)
+
+        val inputContent = Base64.getEncoder().encodeToString(this::class.java.getResource("/input.c").readBytes())
+
+        var id: Int? = null
+
+        mockMvc.perform(post("/tasks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"input":{"inputs":[{"name":"inputfile.c","content":"$inputContent"}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}""")
+        ).andExpect(status().isOk).andDo {
+            id =((it.asyncResult as ResponseEntity<*>).body as IdObjectDto).id
+        }
+        Assertions.assertNotNull(id)
+
+        var done = false
+        var counter = 10
+        while(!done && counter > 0) {
+            mockMvc.perform(get("/tasks/$id")).andDo {
+                val map =((it.asyncResult as ResponseEntity<*>).body as OutTaskDto?)
+                if (map?.doneStatus != null) {
+                    done = true
+                    Assertions.assertTrue(map.doneStatus?.stdout!!.contains("SafetyResult Unsafe"))
+                } else {
+                    counter--
+                }
+            }
+            Thread.sleep(1000)
+        }
+        Assertions.assertTrue(counter > 0, "Task did not finish in the given timeframe.")
+        tempFolder.deleteRecursively()
+    }
 }
