@@ -24,8 +24,9 @@ class ExecutableTest(
     @Autowired val config: ApplicationConfiguration) {
 
     @Test
-    fun testEmptyGet(@TempDir tempDir: Path) {
-        config.executables = tempDir.absolutePathString()
+    fun testEmptyGet(@TempDir tempDir1: Path, @TempDir tempDir2: Path) {
+        config.executables = tempDir1.absolutePathString()
+        config.tmp = tempDir2.absolutePathString()
         Assertions.assertThrows(NoSuchElement::class.java) {
             runBlocking {
                  executablesApiService.thetaGet()
@@ -38,8 +39,9 @@ class ExecutableTest(
         }
     }
     @Test
-    fun testPut(@TempDir tempDir: Path) {
-        config.executables = tempDir.absolutePathString()
+    fun testPut(@TempDir tempDir1: Path, @TempDir tempDir2: Path) {
+        config.executables = tempDir1.absolutePathString()
+        config.tmp = tempDir2.absolutePathString()
         val executable = InExecutableDto(
             version = "SampleVersion",
             description = "SampleDescription",

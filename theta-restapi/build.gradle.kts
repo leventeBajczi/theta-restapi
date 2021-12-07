@@ -1,5 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+plugins {
+    jacoco
+    val kotlinVersion = "1.6.0"
+    id("org.jetbrains.kotlin.jvm") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
+    id("org.springframework.boot") version "2.6.0"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -22,14 +32,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
 
-plugins {
-    val kotlinVersion = "1.6.0"
-    id("org.jetbrains.kotlin.jvm") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
-    id("org.springframework.boot") version "2.6.0"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-}
 
 dependencies {
     val kotlinxCoroutinesVersion="1.6.0-RC"
@@ -53,8 +55,19 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+
 tasks.test {
     useJUnitPlatform()
+}
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+}
+
+jacoco {
+    toolVersion = "0.8.7"
 }
 
 repositories {
