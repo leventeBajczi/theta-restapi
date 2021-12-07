@@ -1,8 +1,9 @@
 package hu.bme.mit.theta.restapi.api.users
 
 import hu.bme.mit.theta.restapi.api.handleRESTStatus
-import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
-import hu.bme.mit.theta.restapi.model.dtos.UserDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InUserDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutUserDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -19,7 +20,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         value = ["/users"],
         produces = ["application/json"]
     )
-    suspend fun usersGet(): ResponseEntity<List<UserDto>> {
+    suspend fun usersGet(): ResponseEntity<List<OutUserDto>> {
         return handleRESTStatus {service.usersGet()}
     }
 
@@ -41,7 +42,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"]
     )
     suspend fun usersIdGet( @PathVariable("id") id: Int
-): ResponseEntity<UserDto> {
+): ResponseEntity<OutUserDto> {
         return handleRESTStatus {service.usersIdGet(id)}
     }
 
@@ -52,8 +53,8 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun usersIdPut( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
-        return handleRESTStatus {service.usersIdPut(userDto)}
+    suspend fun usersIdPut( @PathVariable id: Int, @RequestBody userDto: InUserDto): ResponseEntity<IdObjectDto> {
+        return handleRESTStatus {service.usersIdPut(userDto, id)}
     }
 
 
@@ -63,7 +64,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun usersPost( @RequestBody userDto: UserDto): ResponseEntity<IdObjectDto> {
+    suspend fun usersPost( @RequestBody userDto: InUserDto): ResponseEntity<IdObjectDto> {
         return handleRESTStatus {service.usersIdPut(userDto)}
     }
 }

@@ -1,7 +1,9 @@
-package hu.bme.mit.theta.restapi.model.dtos
+package hu.bme.mit.theta.restapi.model.dtos.output
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
 import hu.bme.mit.theta.restapi.model.entities.Task
+import hu.bme.mit.theta.restapi.model.enums.Priority
 import hu.bme.mit.theta.restapi.repository.FileRepository
 
 /**
@@ -14,7 +16,7 @@ import hu.bme.mit.theta.restapi.repository.FileRepository
  * @param priority 
  * @param benchmark 
  */
-data class TaskDto(
+data class OutTaskDto(
 
     @field:JsonProperty("id", required = true) val id: Int? = null,
 
@@ -28,7 +30,7 @@ data class TaskDto(
 
     @field:JsonProperty("priority") val priority: Priority? = Priority.BESTEFFORT,
 
-    @field:JsonProperty("benchmark") val benchmark: TaskBenchmarkDto? = null
+    @field:JsonProperty("benchmark") val benchmark: OutTaskBenchmarkDto? = null
 ) {
 
     constructor(task: Task, fileRepository: FileRepository) : this(
@@ -38,24 +40,8 @@ data class TaskDto(
         task.userId,
         task.parameters,
         task.priority,
-        TaskBenchmarkDto(ResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS))
+        OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS))
     ) {}
-
-    /**
-    * 
-    * Values: BESTEFFORT,LOW,MEDIUM,HIGH
-    */
-    enum class Priority(val value: String) {
-    
-        @JsonProperty("BEST_EFFORT") BESTEFFORT("BEST_EFFORT"),
-    
-        @JsonProperty("LOW") LOW("LOW"),
-    
-        @JsonProperty("MEDIUM") MEDIUM("MEDIUM"),
-    
-        @JsonProperty("HIGH") HIGH("HIGH");
-    
-    }
 
 }
 

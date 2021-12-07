@@ -1,7 +1,8 @@
 package hu.bme.mit.theta.restapi.api.executables
 
 import hu.bme.mit.theta.restapi.api.handleRESTStatus
-import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InExecutableDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutExecutableDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -22,7 +23,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/runexec"],
         produces = ["application/json"]
     )
-    suspend fun runexecGet(): ResponseEntity<ExecutableDto> {
+    suspend fun runexecGet(): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {service.runexecGet()}
     }
 
@@ -38,8 +39,9 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam(name = "version", required = true) version: String,
         @RequestParam(name = "commit", required = false) commit: String?,
         @RequestParam(name = "description", required = true) description: String,
-    ): ResponseEntity<ExecutableDto> {
-        return handleRESTStatus {service.runexecPut(ExecutableDto(version, description, binaryBytes = binary.bytes, commit = commit)
+    ): ResponseEntity<OutExecutableDto> {
+        return handleRESTStatus {service.runexecPut(
+            InExecutableDto(version, description, binaryBytes = binary.bytes, commit = commit)
         )}
     }
 
@@ -49,7 +51,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/theta"],
         produces = ["application/json"]
     )
-    suspend fun thetaGet(): ResponseEntity<ExecutableDto> {
+    suspend fun thetaGet(): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {service.thetaGet()}
     }
 
@@ -65,10 +67,10 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam("version", required = true) version: String,
         @RequestParam("commit", required = false) commit: String?,
         @RequestParam("description", required = true) description: String,
-    ): ResponseEntity<ExecutableDto> {
+    ): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {
             service.thetaPut(
-                ExecutableDto(version, description, binaryBytes = binary.bytes, commit = commit)
+                InExecutableDto(version = version, description = description, binaryBytes = binary.bytes, commit = commit)
             )
         }
     }

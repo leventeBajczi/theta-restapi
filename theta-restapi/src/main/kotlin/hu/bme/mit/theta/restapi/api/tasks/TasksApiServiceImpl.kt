@@ -1,9 +1,10 @@
 package hu.bme.mit.theta.restapi.api.tasks
 
 import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
-import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
-import hu.bme.mit.theta.restapi.model.dtos.MultiInputDto
-import hu.bme.mit.theta.restapi.model.dtos.TaskDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InTaskDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutTaskDto
 import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
@@ -25,7 +26,7 @@ class TasksApiServiceImpl(
     val executorService = Executors.newFixedThreadPool(1)
 
 
-    override suspend fun tasksGet(): List<TaskDto> = repository.findAll().map { TaskDto(it, fileRepository) }
+    override suspend fun tasksGet(): List<OutTaskDto> = repository.findAll().map { OutTaskDto(it, fileRepository) }
 
     override suspend fun tasksIdDelete(id: Int): IdObjectDto {
         if(repository.existsById(id)) {
@@ -34,11 +35,11 @@ class TasksApiServiceImpl(
         return IdObjectDto(id)
     }
 
-    override suspend fun tasksIdGet(id: Int): TaskDto = TaskDto(repository.findById(id).orElseThrow { NoSuchElement() }, fileRepository)
+    override suspend fun tasksIdGet(id: Int): OutTaskDto = OutTaskDto(repository.findById(id).orElseThrow { NoSuchElement() }, fileRepository)
 
     override suspend fun tasksIdInputGet(id: Int): MultiInputDto = repository.findById(id).orElseThrow { NoSuchElement() }.readInputs(fileRepository, true)
 
-    override suspend fun tasksPost(task: TaskDto): IdObjectDto {
+    override suspend fun tasksPost(task: InTaskDto): IdObjectDto {
         val savedTask = repository.save(Task(task, fileRepository))
         executorService.submit { thetaRunner.runTask(savedTask) }
         return IdObjectDto(savedTask.id)

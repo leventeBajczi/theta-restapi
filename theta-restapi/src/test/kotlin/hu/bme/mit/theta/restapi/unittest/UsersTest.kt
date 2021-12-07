@@ -2,7 +2,8 @@ package hu.bme.mit.theta.restapi.unittest
 
 import hu.bme.mit.theta.restapi.api.users.UsersApiService
 import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
-import hu.bme.mit.theta.restapi.model.dtos.UserDto
+import hu.bme.mit.theta.restapi.membersEqual
+import hu.bme.mit.theta.restapi.model.dtos.input.InUserDto
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,50 +12,38 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 import javax.transaction.Transactional
-import kotlin.reflect.full.memberProperties
 
 @Component
 @SpringBootTest
 @Transactional
 @ConfigurationPropertiesBinding
 class UsersTest(@Autowired val usersApiService: UsersApiService) {
-    private fun userEquals(user1: UserDto, user2: UserDto) : Boolean {
-        for(prop in UserDto::class.memberProperties) {
-            val user1Prop = prop.get(user1)
-            val user2Prop = prop.get(user2)
-            if(user1Prop != null && user2Prop != null && user1Prop != user2Prop)
-                return false
-        }
-        return true
-    }
-
-
     @Test
     fun testEmptyGet() {
         runBlocking {
             val tasks = usersApiService.usersGet()
-            Assertions.assertEquals(emptyList<UserDto>(), tasks)
+            Assertions.assertEquals(emptyList<InUserDto>(), tasks)
         }
     }
 
     @Test
     fun testPost() {
         runBlocking {
-            val user = UserDto(name="Name")
+            val user = InUserDto(name="Name")
             val preUsers = usersApiService.usersGet()
-            Assertions.assertFalse(preUsers.any { userEquals(it, user) })
+            Assertions.assertFalse(preUsers.any { membersEqual(it, user) })
             usersApiService.usersPost(user)
             val postUsers = usersApiService.usersGet()
-            Assertions.assertTrue(postUsers.any { userEquals(it, user) })
+            Assertions.assertTrue(postUsers.any { membersEqual(it, user) })
         }
     }
 
     @Test
     fun testGetById() {
         runBlocking {
-            val user = UserDto(name="Name")
+            val user = InUserDto(name="Name")
             val postedUserId = usersApiService.usersPost(user)
-            Assertions.assertTrue(userEquals(user, usersApiService.usersIdGet(postedUserId.id!!)))
+            Assertions.assertTrue(membersEqual(usersApiService.usersIdGet(postedUserId.id!!), user))
         }
     }
 
@@ -62,7 +51,7 @@ class UsersTest(@Autowired val usersApiService: UsersApiService) {
     fun testDelete() {
         Assertions.assertThrows(NoSuchElement::class.java) {
             runBlocking {
-                val user = UserDto(name="Name")
+                val user = InUserDto(name="Name")
                 val postedUserId = usersApiService.usersPost(user)
                 val deletedUserId = usersApiService.usersIdDelete(postedUserId.id!!)
                 Assertions.assertEquals(postedUserId, deletedUserId)
@@ -74,14 +63,14 @@ class UsersTest(@Autowired val usersApiService: UsersApiService) {
     @Test
     fun testPut() {
         runBlocking {
-            val user = UserDto(name="Name")
+            val user = InUserDto(name="Name")
             val postedUserId = usersApiService.usersPost(user)
-            Assertions.assertTrue(userEquals(user, usersApiService.usersIdGet(postedUserId.id!!)))
-            val modifiedUser = UserDto(id=postedUserId.id!!, name="ModifiedName")
-            val putUserId = usersApiService.usersIdPut(modifiedUser)
+            Assertions.assertTrue(membersEqual(usersApiService.usersIdGet(postedUserId.id!!), user))
+            val modifiedUser = InUserDto(name="ModifiedName")
+            val putUserId = usersApiService.usersIdPut(modifiedUser, postedUserId.id!!)
             Assertions.assertEquals(postedUserId, putUserId)
-            Assertions.assertTrue(userEquals(modifiedUser, usersApiService.usersIdGet(putUserId.id!!)))
-            Assertions.assertFalse(userEquals(user, usersApiService.usersIdGet(putUserId.id!!)))
+            Assertions.assertTrue(membersEqual(usersApiService.usersIdGet(putUserId.id!!), modifiedUser))
+            Assertions.assertFalse(membersEqual(usersApiService.usersIdGet(putUserId.id!!), user))
         }
     }
 }

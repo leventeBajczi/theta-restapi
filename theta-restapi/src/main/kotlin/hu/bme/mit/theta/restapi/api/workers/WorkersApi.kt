@@ -1,8 +1,9 @@
 package hu.bme.mit.theta.restapi.api.workers
 
 import hu.bme.mit.theta.restapi.api.handleRESTStatus
-import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
-import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InWorkerDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutWorkerDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -19,7 +20,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers"],
         produces = ["application/json"]
     )
-    suspend fun workersGet(): ResponseEntity<List<WorkerDto>> {
+    suspend fun workersGet(): ResponseEntity<List<OutWorkerDto>> {
         return handleRESTStatus {service.workersGet()}
     }
 
@@ -41,7 +42,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersIdGet( @PathVariable("id") id: Int
-): ResponseEntity<WorkerDto> {
+): ResponseEntity<OutWorkerDto> {
         return handleRESTStatus {service.workersIdGet(id)}
     }
 
@@ -52,8 +53,8 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun workersIdPut( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
-        return handleRESTStatus {service.workersIdPut(workerDto)}
+    suspend fun workersIdPut( @PathVariable id: Int, @RequestBody workerDto: InWorkerDto): ResponseEntity<IdObjectDto> {
+        return handleRESTStatus {service.workersIdPut(workerDto, id)}
     }
 
 
@@ -63,7 +64,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun workersPost( @RequestBody workerDto: WorkerDto): ResponseEntity<IdObjectDto> {
+    suspend fun workersPost( @RequestBody workerDto: InWorkerDto): ResponseEntity<IdObjectDto> {
         return handleRESTStatus {service.workersIdPut(workerDto)}
     }
 }

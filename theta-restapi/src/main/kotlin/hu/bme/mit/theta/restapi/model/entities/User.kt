@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.restapi.model.entities
 
-import hu.bme.mit.theta.restapi.model.dtos.UserDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InUserDto
+import hu.bme.mit.theta.restapi.model.enums.Permissions
 import javax.persistence.*
 
 @Entity
@@ -10,14 +11,14 @@ data class User(
     val id: Int = 0,
     val name: String,
     @ElementCollection
-    val permissions: List<UserDto.Permissions> = emptyList(),
+    val permissions: List<Permissions> = emptyList(),
     val logicalCpuQuota: Int = -1,
     val ramMbQuota: Int = -1,
     val timeshareSQuota: Int = -1,
 ) {
 
-    constructor(userDto: UserDto) : this(
-        id = userDto.id ?: 0,
+    constructor(userDto: InUserDto, id: Int = 0) : this(
+        id = id,
         name = userDto.name!!,
         permissions = userDto.permissions ?: emptyList(),
         logicalCpuQuota = userDto.quotas?.logicalCpu ?: -1,

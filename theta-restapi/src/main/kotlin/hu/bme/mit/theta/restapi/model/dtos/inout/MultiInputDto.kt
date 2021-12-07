@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model.dtos
+package hu.bme.mit.theta.restapi.model.dtos.inout
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

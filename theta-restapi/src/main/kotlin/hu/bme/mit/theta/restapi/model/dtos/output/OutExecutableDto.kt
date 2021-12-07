@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.restapi.model.dtos
+package hu.bme.mit.theta.restapi.model.dtos.output
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -6,16 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * 
  * @param version 
  * @param description 
- * @param binaryBytes
  * @param commit
  */
-data class ExecutableDto(
+data class OutExecutableDto(
 
     @field:JsonProperty("version", required = true) val version: String,
 
     @field:JsonProperty("description", required = true) val description: String,
-
-    @field:JsonProperty("binaryBytes", required = true) val binaryBytes: ByteArray? = null,
 
     @field:JsonProperty("commit") val commit: String? = null
 ) {

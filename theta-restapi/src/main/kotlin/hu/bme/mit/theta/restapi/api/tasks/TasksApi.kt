@@ -2,9 +2,10 @@ package hu.bme.mit.theta.restapi.api.tasks
 
 
 import hu.bme.mit.theta.restapi.api.handleRESTStatus
-import hu.bme.mit.theta.restapi.model.dtos.IdObjectDto
-import hu.bme.mit.theta.restapi.model.dtos.MultiInputDto
-import hu.bme.mit.theta.restapi.model.dtos.TaskDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
+import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InTaskDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutTaskDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -21,7 +22,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks"],
         produces = ["application/json"]
     )
-    suspend fun tasksGet(): ResponseEntity<List<TaskDto>> {
+    suspend fun tasksGet(): ResponseEntity<List<OutTaskDto>> {
         return handleRESTStatus {service.tasksGet()}
     }
 
@@ -43,7 +44,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksIdGet( @PathVariable("id") id: Int
-    ): ResponseEntity<TaskDto> {
+    ): ResponseEntity<OutTaskDto> {
         return handleRESTStatus {service.tasksIdGet(id)}
     }
 
@@ -65,7 +66,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun tasksPost( @RequestBody taskDto: TaskDto
+    suspend fun tasksPost( @RequestBody taskDto: InTaskDto
     ): ResponseEntity<IdObjectDto> {
         return handleRESTStatus {service.tasksPost(taskDto)}
     }

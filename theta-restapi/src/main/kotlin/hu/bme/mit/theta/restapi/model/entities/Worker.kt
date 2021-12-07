@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.restapi.model.entities
 
-import hu.bme.mit.theta.restapi.model.dtos.WorkerDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InWorkerDto
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -14,8 +14,8 @@ data class Worker(
     val name: String?,
     val address: String,
 ) {
-    constructor(workerDto: WorkerDto) : this(
-        id = workerDto.id ?: 0,
+    constructor(workerDto: InWorkerDto, id: Int = 0) : this(
+        id = id,
         address = workerDto.address,
         name = workerDto.name
     )

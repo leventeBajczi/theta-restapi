@@ -3,7 +3,8 @@ package hu.bme.mit.theta.restapi.unittest
 import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.api.executables.ExecutablesApiService
 import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
-import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
+import hu.bme.mit.theta.restapi.membersEqual
+import hu.bme.mit.theta.restapi.model.dtos.input.InExecutableDto
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -39,24 +40,24 @@ class ExecutableTest(
     @Test
     fun testPut(@TempDir tempDir: Path) {
         config.executables = tempDir.absolutePathString()
-        val executable = ExecutableDto(
+        val executable = InExecutableDto(
             version = "SampleVersion",
             description = "SampleDescription",
             binaryBytes = "BinaryContent".toByteArray(),
             commit = "SampleCommit",
         )
-        val executableNoBinary = ExecutableDto(
+        val executableNoBinary = InExecutableDto(
             version = "SampleVersion",
             description = "SampleDescription",
             commit = "SampleCommit",
         )
         runBlocking {
             executablesApiService.thetaPut(executable)
-            Assertions.assertEquals(executableNoBinary, executablesApiService.thetaGet())
+            Assertions.assertTrue(membersEqual(executableNoBinary, executablesApiService.thetaGet()), Pair(executableNoBinary, executablesApiService.thetaGet()).toString())
         }
         runBlocking {
             executablesApiService.runexecPut(executable)
-            Assertions.assertEquals(executableNoBinary, executablesApiService.runexecGet())
+            Assertions.assertTrue(membersEqual(executableNoBinary, executablesApiService.runexecGet()), Pair(executableNoBinary, executablesApiService.runexecGet()).toString())
         }
     }
 }

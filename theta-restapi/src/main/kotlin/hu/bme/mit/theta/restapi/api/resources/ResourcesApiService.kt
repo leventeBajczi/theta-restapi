@@ -1,8 +1,8 @@
 package hu.bme.mit.theta.restapi.api.resources
 
-import hu.bme.mit.theta.restapi.model.dtos.StaticResourcesDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutStaticResourcesDto
 
 interface ResourcesApiService {
 
-    suspend fun resourcesGet(): StaticResourcesDto
+    suspend fun resourcesGet(): OutStaticResourcesDto
 }

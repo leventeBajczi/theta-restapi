@@ -1,7 +1,8 @@
 package hu.bme.mit.theta.restapi.api.resources
 
 import hu.bme.mit.theta.restapi.api.handleRESTStatus
-import hu.bme.mit.theta.restapi.model.dtos.StaticResourcesDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InStaticResourcesDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutStaticResourcesDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -20,7 +21,7 @@ class ResourcesApiController(@Autowired(required = true) val service: ResourcesA
         value = ["/resources"],
         produces = ["application/json"]
     )
-    suspend fun resourcesGet(): ResponseEntity<StaticResourcesDto> {
+    suspend fun resourcesGet(): ResponseEntity<OutStaticResourcesDto> {
         return handleRESTStatus {service.resourcesGet()}
     }
 }

@@ -12,6 +12,7 @@ fun Array<String>.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.S
         .start()
 
     if(timeout > 0) proc.waitFor(timeout, timeUnit)
+    else proc.waitFor()
     return Pair(stdoutFile, stderrFile)
 }
 fun String.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> = arrayOf(this).runCommand(timeout, timeUnit)

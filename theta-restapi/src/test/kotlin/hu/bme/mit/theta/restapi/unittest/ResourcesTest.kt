@@ -18,7 +18,7 @@ class ResourcesTest(@Autowired val resourcesService: ResourcesApiService) {
         runBlocking {
             val resources = resourcesService.resourcesGet()
             Assertions.assertNotNull(resources.logicalCpu)
-            Assertions.assertTrue(resources.ramG != null || resources.ramM != null)
+            Assertions.assertTrue(resources.ramM != null)
         }
     }
 }

@@ -2,7 +2,8 @@ package hu.bme.mit.theta.restapi.utils.impl
 
 import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
-import hu.bme.mit.theta.restapi.model.dtos.ExecutableDto
+import hu.bme.mit.theta.restapi.model.dtos.input.InExecutableDto
+import hu.bme.mit.theta.restapi.model.dtos.output.OutExecutableDto
 import hu.bme.mit.theta.restapi.utils.iface.ExecutableUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) : ExecutableUtils {
     val sync: Any = Any()
 
-    override fun getStatus(s: String): ExecutableDto {
+    override fun getStatus(s: String): OutExecutableDto {
         synchronized(sync) {
             val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
             if (!(folder.exists() && folder.isDirectory)) {
@@ -35,11 +36,11 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
             } catch (e: IOException) {
                 "unkown"
             }
-            return ExecutableDto(version = version, commit = commit, description = description)
+            return OutExecutableDto(version = version, commit = commit, description = description)
         }
     }
 
-    override fun updateExecutable(s: String, executable: ExecutableDto) : ExecutableDto{
+    override fun updateExecutable(s: String, executable: InExecutableDto) : OutExecutableDto {
         synchronized(sync) {
             val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
             if (folder.exists() && folder.isDirectory) {
