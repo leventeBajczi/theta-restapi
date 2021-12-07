@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.restapi.api.tasks
 
+import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.exceptions.NoSuchElement
 import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
@@ -21,6 +22,8 @@ class TasksApiServiceImpl(
     val fileRepository: FileRepository,
     @Autowired
     val thetaRunner: ThetaRunner,
+    @Autowired
+    val config: ApplicationConfiguration
 ) : TasksApiService {
 
     val executorService = Executors.newFixedThreadPool(1)
@@ -40,7 +43,7 @@ class TasksApiServiceImpl(
     override suspend fun tasksIdInputGet(id: Int): MultiInputDto = repository.findById(id).orElseThrow { NoSuchElement() }.readInputs(fileRepository, true)
 
     override suspend fun tasksPost(task: InTaskDto): IdObjectDto {
-        val savedTask = repository.save(Task(task, fileRepository))
+        val savedTask = repository.save(Task(task, fileRepository, config))
         executorService.submit { thetaRunner.runTask(savedTask) }
         return IdObjectDto(savedTask.id)
     }

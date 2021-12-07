@@ -8,4 +8,5 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties(prefix = "folders")
 class ApplicationConfiguration {
     var executables: String = "."
+    var tmp: String = "tmp"
 }

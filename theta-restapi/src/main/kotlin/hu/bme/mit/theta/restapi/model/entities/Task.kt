@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.restapi.model.entities
 
+import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
 import hu.bme.mit.theta.restapi.model.dtos.inout.SingleInputDto
 import hu.bme.mit.theta.restapi.model.dtos.input.InTaskDto
@@ -34,11 +35,11 @@ data class Task(
     val stdout: File? = null,
     val stderr: File? = null,
 ) {
-    constructor(task: InTaskDto, fileRepository: FileRepository) : this(
+    constructor(task: InTaskDto, fileRepository: FileRepository, config: ApplicationConfiguration) : this(
         inputIds = task.input.inputs.map {
             val noExtensionName = if(it.name.contains('.')) it.name.substring(0, it.name.lastIndexOf(".")) else it.name
             val extension = if(it.name.contains('.')) it.name.substring(it.name.lastIndexOf(".")+1) else ""
-            val file = File.createTempFile(noExtensionName, extension)
+            val file = File.createTempFile(noExtensionName, extension, File(config.tmp))
             file.writeBytes(Base64.getDecoder().decode(it.content!!))
             fileRepository.save(File(name = it.name, fullPath = file.absolutePath)).id }.toList(),
         userId = task.userId,

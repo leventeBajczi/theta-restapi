@@ -3,9 +3,10 @@ package hu.bme.mit.theta.restapi.utils.impl
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-fun Array<String>.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> {
-    val stdoutFile = File.createTempFile("stdout", ".txt")
-    val stderrFile = File.createTempFile("stderr", ".txt")
+fun Array<String>.runCommand(folder: File, timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> {
+    File("tmp").mkdirs()
+    val stdoutFile = File.createTempFile("stdout", ".txt", folder)
+    val stderrFile = File.createTempFile("stderr", ".txt", folder)
     try {
         val proc = ProcessBuilder(*this)
             .redirectOutput(ProcessBuilder.Redirect.appendTo(stdoutFile))
@@ -18,4 +19,4 @@ fun Array<String>.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.S
     }
     return Pair(stdoutFile, stderrFile)
 }
-fun String.runCommand(timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> = arrayOf(this).runCommand(timeout, timeUnit)
+fun String.runCommand(folder: File, timeout: Long = -1, timeUnit: TimeUnit = TimeUnit.SECONDS): Pair<File, File> = arrayOf(this).runCommand(folder, timeout, timeUnit)

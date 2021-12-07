@@ -55,7 +55,7 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
             val file = File(config.executables + File.separator + s)
             file.delete()
             file.writeBytes(executable.binaryBytes!!)
-            arrayOf("unzip",file.absolutePath,"-d",folder.absolutePath).runCommand(1, TimeUnit.MINUTES)
+            arrayOf("unzip",file.absolutePath,"-d",folder.absolutePath).runCommand(File(config.tmp), 1, TimeUnit.MINUTES)
             File(folder.path + "." + "description.txt").writeText(executable.description)
             File(folder.path + "." + "relativePath.txt").writeText(executable.relativePath)
             if(executable.commit != null) File(folder.path + "." + "commit.txt").writeText(executable.commit)

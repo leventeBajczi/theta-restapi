@@ -5,7 +5,6 @@ import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.output.OutTaskDto
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -15,9 +14,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.nio.file.Path
+import java.io.File
 import java.util.*
-import kotlin.io.path.absolutePathString
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,8 +26,12 @@ class IntegrationTest(
 ) {
 
     @Test
-    fun testDirectTheta(@TempDir test: Path) {
-        config.executables = test.absolutePathString()
+    fun testDirectTheta() {
+        val tempFolder = File(this::class.java.getResource("/").path + File.separator + "tmp");
+        config.tmp = tempFolder.absolutePath
+        tempFolder.mkdirs()
+
+        config.executables = tempFolder.absolutePath
         val thetaZipBytes = this::class.java.getResource("/theta.zip").readBytes()
         mockMvc.perform(multipart("/theta")
             .file("binary", thetaZipBytes)
@@ -45,7 +47,7 @@ class IntegrationTest(
 
         mockMvc.perform(post("/tasks")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""{"input":{"inputs":[{"name":"inputfile","content":"$inputContent"}]},"userId":0,"parameters":["inputfile","--portfolio","COMPLEX"]}""")
+            .content("""{"input":{"inputs":[{"name":"inputfile.c","content":"$inputContent"}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"]}""")
         ).andExpect(status().isOk).andDo {
             id =((it.asyncResult as ResponseEntity<*>).body as IdObjectDto).id
         }
@@ -63,8 +65,9 @@ class IntegrationTest(
                     counter--
                 }
             }
-            Thread.sleep(500)
+            Thread.sleep(1000)
         }
         Assertions.assertTrue(counter > 0, "Task did not finish in the given timeframe.")
+        tempFolder.deleteRecursively()
     }
 }
