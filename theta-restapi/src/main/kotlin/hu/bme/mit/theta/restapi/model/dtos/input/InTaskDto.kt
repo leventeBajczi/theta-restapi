@@ -2,7 +2,9 @@ package hu.bme.mit.theta.restapi.model.dtos.input
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
+import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.model.enums.Priority
+import hu.bme.mit.theta.restapi.repository.FileRepository
 
 /**
  * 
@@ -24,7 +26,12 @@ data class InTaskDto(
 
     @field:JsonProperty("benchmark") val benchmark: InTaskBenchmarkDto? = null
 ) {
-
-
+    constructor(task: Task, fileRepository: FileRepository) : this(
+        task.readInputs(fileRepository, true),
+        task.userId,
+        task.parameters,
+        task.priority,
+        InTaskBenchmarkDto(InResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
+    )
 }
 

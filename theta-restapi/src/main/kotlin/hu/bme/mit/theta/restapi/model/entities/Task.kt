@@ -31,6 +31,7 @@ data class Task(
     val ramMb: Int = -1,
     val timeoutS: Int = -1,
     val useRunexec: Boolean = false,
+    val useScheduling: Boolean = false,
     val usedRamMb: Double? = null,
     val usedTimeS: Double? = null,
     val usedCpuTimeS: Double? = null,
@@ -51,6 +52,7 @@ data class Task(
         ramMb = task.benchmark?.resources?.ramM ?: (task.benchmark?.resources?.ramG?.times(1000)) ?: -1,
         timeoutS = task.benchmark?.resources?.timeoutS ?: -1,
         useRunexec = task.benchmark?.useRunexec ?: false,
+        useScheduling = task.benchmark?.useScheduling ?: false,
     )
 
     fun readInputs(fileRepository: FileRepository, includeContent: Boolean = false) : MultiInputDto = MultiInputDto(
