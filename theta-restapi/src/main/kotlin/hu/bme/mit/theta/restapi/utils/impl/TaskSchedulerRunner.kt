@@ -93,7 +93,7 @@ class TaskSchedulerRunner (
                 }
             }
 
-            workers.forEach {
+            HashMap(workers).forEach {
                 if (it.value == null) {
                     val resources = it.key.getResources()
                     if (resources != null) {
