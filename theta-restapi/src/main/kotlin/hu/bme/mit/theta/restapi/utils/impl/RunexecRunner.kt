@@ -21,6 +21,7 @@ class RunexecRunner(
     override fun runTask(
         task: Task
     ) {
+        println("Running benchmark $task")
         val timeLimit = task.timeoutS
         val inputs = task.inputIds.map { fileRepository.findById(it).orElseThrow() }.associateBy({it.name}, {it.fullPath})
         val runexecParams = mutableListOf("--read-only-dir", "/", "--overlay-dir", "/home")

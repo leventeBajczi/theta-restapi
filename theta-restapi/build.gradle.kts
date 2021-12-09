@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     jacoco
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     val kotlinVersion = "1.6.0"
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
@@ -9,6 +10,15 @@ plugins {
     id("org.springframework.boot") version "2.6.0"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
+
+tasks{
+    shadowJar {
+        manifest {
+            attributes(Pair("Main-Class", "hu.bme.mit.theta.restapi.Application"))
+        }
+    }
+}
+
 
 buildscript {
     repositories {

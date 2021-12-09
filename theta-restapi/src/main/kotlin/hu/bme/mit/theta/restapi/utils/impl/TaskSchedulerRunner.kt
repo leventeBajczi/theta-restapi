@@ -14,8 +14,11 @@ import hu.bme.mit.theta.restapi.repository.WorkerRepository
 import hu.bme.mit.theta.restapi.utils.iface.ThetaRunner
 import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.DefaultUriBuilderFactory
@@ -24,9 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 
 @Component
-@Qualifier("taskScheduler")
-//@EnableScheduling
-class TaskScheduler (
+class TaskSchedulerRunner (
     @Autowired val taskRepository: TaskRepository,
     @Autowired val config: ApplicationConfiguration,
     @Autowired val fileRepository: FileRepository,
@@ -40,11 +41,12 @@ class TaskScheduler (
     private val queue = LinkedBlockingQueue<Task>()
 
     override fun runTask(task: Task) {
+        println("Running scheduled task $task")
         queue.add(task)
     }
 
-//    @Scheduled(fixedDelay = 30_000)
-    private fun discoverWorkers() {
+    @Scheduled(fixedDelay = 30_000)
+    fun discoverWorkers() {
         val allWorkers = workerRepository.findAll()
         val keys = LinkedHashSet(workerLookup.keys)
         allWorkers.forEach {
@@ -53,6 +55,7 @@ class TaskScheduler (
                 val workerWrapper = WorkerWrapper(it)
                 workers[workerWrapper] = null
                 workerLookup[it.id] = workerWrapper
+                println("Adding worker $it")
             }
             else if (workerLookup[it.id]?.worker != it) {
                 workerLookup[it.id]?.worker = it
@@ -65,7 +68,7 @@ class TaskScheduler (
         }
     }
 
-//    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000)
     private fun allocateTasks() {
         taskAllocation.forEach {
             val task = it.key
@@ -116,7 +119,12 @@ class TaskScheduler (
         private val restTemplate: RestTemplate = restTemplate(worker.address)
 
         fun getResources() : OutResourcesDto? {
-            return restTemplate.getForObject("/resources", OutResourcesDto::class.java)
+            try {
+                return restTemplate.getForObject("/resources", OutResourcesDto::class.java)
+            } catch(e: Exception) {
+                e.printStackTrace()
+                throw e
+            }
         }
 
         fun getStatus(task: Task) : OutStatusDto? {
@@ -138,7 +146,12 @@ class TaskScheduler (
         }
 
         fun dispatchTask(task: Task) : Int? {
-            return restTemplate.postForObject("/tasks", InTaskDto(task, fileRepository), IdObjectDto::class.java)?.id
+            val taskDto = InTaskDto(task, fileRepository)
+            val toSend = taskDto.copy(benchmark = taskDto.benchmark?.copy(useScheduling = false))
+            val headers = HttpHeaders()
+            headers.contentType = MediaType.APPLICATION_JSON
+            val entity: HttpEntity<InTaskDto> = HttpEntity(toSend, headers)
+            return restTemplate.postForObject("/tasks", entity, IdObjectDto::class.java)?.id
         }
 
         fun restTemplate(apiHost: String): RestTemplate {

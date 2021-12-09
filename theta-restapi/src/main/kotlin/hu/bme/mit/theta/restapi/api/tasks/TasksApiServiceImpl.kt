@@ -11,7 +11,7 @@ import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
 import hu.bme.mit.theta.restapi.utils.impl.DirectThetaRunner
 import hu.bme.mit.theta.restapi.utils.impl.RunexecRunner
-import hu.bme.mit.theta.restapi.utils.impl.TaskScheduler
+import hu.bme.mit.theta.restapi.utils.impl.TaskSchedulerRunner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.concurrent.Executors
@@ -23,7 +23,7 @@ class TasksApiServiceImpl(
     @Autowired
     val fileRepository: FileRepository,
     @Autowired
-    val taskScheduler: TaskScheduler,
+    val taskSchedulerRunner: TaskSchedulerRunner,
     @Autowired
     val runexecRunner: RunexecRunner,
     @Autowired
@@ -50,7 +50,7 @@ class TasksApiServiceImpl(
     override suspend fun tasksPost(task: InTaskDto): IdObjectDto {
         val savedTask = repository.save(Task(task, fileRepository, config))
         when {
-            savedTask.useScheduling -> taskScheduler.runTask(savedTask)
+            savedTask.useScheduling -> taskSchedulerRunner.runTask(savedTask)
             savedTask.useRunexec -> executorService.submit { runexecRunner.runTask(savedTask) }
             else -> executorService.submit { directThetaRunner.runTask(savedTask) }
         }

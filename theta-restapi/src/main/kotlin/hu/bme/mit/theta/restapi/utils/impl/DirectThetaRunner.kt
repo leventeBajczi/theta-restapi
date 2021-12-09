@@ -22,6 +22,7 @@ class DirectThetaRunner(
     override fun runTask(
         task: Task
     ) {
+        println("Running task $task")
         val timeLimit = task.timeoutS
         val inputs = task.inputIds.map { fileRepository.findById(it).orElseThrow() }.associateBy({it.name}, {it.fullPath})
         val params = task.parameters.map { inputs.getOrDefault(it, it) }.toTypedArray()
