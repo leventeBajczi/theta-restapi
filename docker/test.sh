@@ -55,25 +55,26 @@ id1=$(curl --request POST \
   --url http://${IPs[0]}:$PORT/tasks \
   --header 'Content-Type: application/json' \
   --header 'X-API-KEY: xApiKey' \
-  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' |  jq -r ".id") > /dev/null 2>&1
+  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
 
 echo "Sending task #2"
 id2=$(curl --request POST \
   --url http://${IPs[0]}:$PORT/tasks \
   --header 'Content-Type: application/json' \
   --header 'X-API-KEY: xApiKey' \
-  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' |  jq -r ".id")  > /dev/null 2>&1
+  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
 
 echo "Waiting for tasks to finish..."
 sleep 5
-
+echo "=============================="
 printf "$(curl --request GET \
   --url http://${IPs[0]}:$PORT/tasks/$id1 \
-  --header 'X-API-KEY: xApiKey'  |  jq -r ".doneStatus.stdout")"
+  --header 'X-API-KEY: xApiKey' 2>/dev/null  |  jq -r ".doneStatus.stdout")"
   
 echo
+echo "=============================="
 echo
 
 printf "$(curl --request GET \
   --url http://${IPs[0]}:$PORT/tasks/$id2 \
-  --header 'X-API-KEY: xApiKey'  |  jq -r ".doneStatus.stdout")"
+  --header 'X-API-KEY: xApiKey' 2>/dev/null  |  jq -r ".doneStatus.stdout")"
