@@ -27,11 +27,13 @@ class IntegrationTest(
 
     @Test
     fun testDirectTheta() {
+        val tmpSave = config.tmp
+        val executablesSave = config.executables
+
         val tempFolder = File(this::class.java.getResource("/").path + File.separator + "tmp");
         config.tmp = tempFolder.absolutePath
         tempFolder.mkdirs()
         try {
-
             config.executables = tempFolder.absolutePath
             val thetaZipBytes = this::class.java.getResource("/theta.zip").readBytes()
             mockMvc.perform(multipart("/theta")
@@ -73,11 +75,16 @@ class IntegrationTest(
         } finally {
             tempFolder.deleteRecursively()
         }
+        config.tmp = tmpSave
+        config.executables = executablesSave
     }
 
 
     @Test
     fun testRunexec() {
+        val tmpSave = config.tmp
+        val executablesSave = config.executables
+
         val tempFolder = File(this::class.java.getResource("/").path + File.separator + "tmp");
         config.tmp = tempFolder.absolutePath
         tempFolder.mkdirs()
@@ -135,5 +142,7 @@ class IntegrationTest(
         } finally {
             tempFolder.deleteRecursively()
         }
+        config.tmp = tmpSave
+        config.executables = executablesSave
     }
 }

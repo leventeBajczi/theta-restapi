@@ -47,69 +47,77 @@ class TaskSchedulerRunner (
 
     @Scheduled(fixedDelay = 30_000)
     fun discoverWorkers() {
-        val allWorkers = workerRepository.findAll()
-        val keys = LinkedHashSet(workerLookup.keys)
-        allWorkers.forEach {
-            keys.remove(it.id)
-            if(!workerLookup.containsKey(it.id)) {
-                val workerWrapper = WorkerWrapper(it)
-                workers[workerWrapper] = null
-                workerLookup[it.id] = workerWrapper
-                println("Adding worker $it")
+        try {
+            val allWorkers = workerRepository.findAll()
+            val keys = LinkedHashSet(workerLookup.keys)
+            allWorkers.forEach {
+                keys.remove(it.id)
+                if (!workerLookup.containsKey(it.id)) {
+                    val workerWrapper = WorkerWrapper(it)
+                    workers[workerWrapper] = null
+                    workerLookup[it.id] = workerWrapper
+                } else if (workerLookup[it.id]?.worker != it) {
+                    workerLookup[it.id]?.worker = it
+                }
             }
-            else if (workerLookup[it.id]?.worker != it) {
-                workerLookup[it.id]?.worker = it
+            keys.forEach {
+                val workerWrapper = workerLookup[it]
+                workers.remove(workerWrapper)
+                workerLookup.remove(it)
             }
-        }
-        keys.forEach {
-            val workerWrapper = workerLookup[it]
-            workers.remove(workerWrapper)
-            workerLookup.remove(it)
+        } catch(e: Exception) {
+            e.printStackTrace()
         }
     }
 
     @Scheduled(fixedDelay = 1000)
     private fun allocateTasks() {
-        taskAllocation.forEach {
-            val task = it.key
-            val status = it.value.getStatus(task)
-            if(status != null) {
-                val tempStdout = File.createTempFile("stdout", ".txt", File(config.tmp))
-                val tempStderr = File.createTempFile("stderr", ".txt", File(config.tmp))
-                tempStdout.writeText(status.stdout ?: "")
-                tempStderr.writeText(status.stderr ?: "")
-                taskRepository.save(task.copy(
-                    usedTimeS = status.usedTimeS,
-                    usedCpuTimeS = status.usedCpuTimeS,
-                    usedRamMb = status.usedRamMb,
-                    stdout = tempStdout,
-                    stderr = tempStderr
-                ))
+        try {
+            taskAllocation.forEach {
+                val task = it.key
+                val status = it.value.getStatus(task)
+                if (status != null) {
+                    val tempStdout = File.createTempFile("stdout", ".txt", File(config.tmp))
+                    val tempStderr = File.createTempFile("stderr", ".txt", File(config.tmp))
+                    tempStdout.writeText(status.stdout ?: "")
+                    tempStderr.writeText(status.stderr ?: "")
+                    taskRepository.save(
+                        task.copy(
+                            usedTimeS = status.usedTimeS,
+                            usedCpuTimeS = status.usedCpuTimeS,
+                            usedRamMb = status.usedRamMb,
+                            stdout = tempStdout,
+                            stderr = tempStderr
+                        )
+                    )
+                }
             }
-        }
 
-        workers.forEach {
-            if(it.value == null) {
-                val resources = it.key.getResources()
-                if (resources != null) {
-                    synchronized(queue) {
-                        val task: Task? = queue.peek()
-                        if (task != null) {
-                            if (task.logicalCpu <= resources.logicalCpu ?: 0 &&
-                                task.ramMb <= resources.ramM ?: 0
-                            ) {
-                                val dispatchedTaskId = it.key.dispatchTask(task)
-                                if(dispatchedTaskId != null) {
-                                    workers[it.key] = task
-                                    taskAllocation[task] = it.key
-                                    taskForeignKeyMap[task] = dispatchedTaskId
-                                    queue.remove(task)
+            workers.forEach {
+                if (it.value == null) {
+                    val resources = it.key.getResources()
+                    if (resources != null) {
+                        synchronized(queue) {
+                            val task: Task? = queue.peek()
+                            if (task != null) {
+                                if (task.logicalCpu <= resources.logicalCpu ?: 0 &&
+                                    task.ramMb <= resources.ramM ?: 0
+                                ) {
+                                    val dispatchedTaskId = it.key.dispatchTask(task)
+                                    if (dispatchedTaskId != null) {
+                                        workers[it.key] = task
+                                        taskAllocation[task] = it.key
+                                        taskForeignKeyMap[task] = dispatchedTaskId
+                                        queue.remove(task)
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        } catch(e: Exception) {
+            e.printStackTrace()
         }
 
     }
@@ -128,30 +136,41 @@ class TaskSchedulerRunner (
         }
 
         fun getStatus(task: Task) : OutStatusDto? {
-            val status: OutTaskDto? = restTemplate.getForObject("/tasks/" + taskForeignKeyMap[task], OutTaskDto::class.java)
-            if(status != null) {
-                return if(status.doneStatus?.stdout != null) {
-                    restTemplate.delete("/tasks/" + taskForeignKeyMap[task])
-                    taskForeignKeyMap.remove(task)
-                    taskAllocation.remove(task)
-                    workers[this] = null
-                    status.doneStatus
-                } else null
+            try {
+                val status: OutTaskDto? =
+                    restTemplate.getForObject("/tasks/" + taskForeignKeyMap[task], OutTaskDto::class.java)
+                if (status != null) {
+                    return if (status.doneStatus?.stdout != null) {
+                        restTemplate.delete("/tasks/" + taskForeignKeyMap[task])
+                        taskForeignKeyMap.remove(task)
+                        taskAllocation.remove(task)
+                        workers[this] = null
+                        status.doneStatus
+                    } else null
+                }
+                taskForeignKeyMap.remove(task)
+                taskAllocation.remove(task)
+                workers[this] = null
+                queue.add(task)
+                return null
+            } catch(e: Exception) {
+                e.printStackTrace()
+                return null
             }
-            taskForeignKeyMap.remove(task)
-            taskAllocation.remove(task)
-            workers[this] = null
-            queue.add(task)
-            return null
         }
 
         fun dispatchTask(task: Task) : Int? {
-            val taskDto = InTaskDto(task, fileRepository)
-            val toSend = taskDto.copy(benchmark = taskDto.benchmark?.copy(useScheduling = false))
-            val headers = HttpHeaders()
-            headers.contentType = MediaType.APPLICATION_JSON
-            val entity: HttpEntity<InTaskDto> = HttpEntity(toSend, headers)
-            return restTemplate.postForObject("/tasks", entity, IdObjectDto::class.java)?.id
+            return try {
+                val taskDto = InTaskDto(task, fileRepository)
+                val toSend = taskDto.copy(benchmark = taskDto.benchmark?.copy(useScheduling = false))
+                val headers = HttpHeaders()
+                headers.contentType = MediaType.APPLICATION_JSON
+                val entity: HttpEntity<InTaskDto> = HttpEntity(toSend, headers)
+                restTemplate.postForObject("/tasks", entity, IdObjectDto::class.java)?.id
+            } catch(e: Exception){
+                e.printStackTrace()
+                null
+            }
         }
 
         fun restTemplate(apiHost: String): RestTemplate {

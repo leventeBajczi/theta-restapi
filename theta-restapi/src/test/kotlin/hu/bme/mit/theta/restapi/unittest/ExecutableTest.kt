@@ -25,6 +25,9 @@ class ExecutableTest(
 
     @Test
     fun testEmptyGet(@TempDir tempDir1: Path, @TempDir tempDir2: Path) {
+        val executablesSave = config.executables
+        val tmpSave = config.tmp
+
         config.executables = tempDir1.absolutePathString()
         config.tmp = tempDir2.absolutePathString()
         Assertions.assertThrows(NoSuchElement::class.java) {
@@ -37,9 +40,15 @@ class ExecutableTest(
                  executablesApiService.runexecGet()
             }
         }
+
+        config.tmp = tmpSave
+        config.executables = executablesSave
     }
     @Test
     fun testPut(@TempDir tempDir1: Path, @TempDir tempDir2: Path) {
+        val executablesSave = config.executables
+        val tmpSave = config.tmp
+
         config.executables = tempDir1.absolutePathString()
         config.tmp = tempDir2.absolutePathString()
         val executable = InExecutableDto(
@@ -63,5 +72,8 @@ class ExecutableTest(
             executablesApiService.runexecPut(executable)
             Assertions.assertTrue(membersEqual(executableNoBinary, executablesApiService.runexecGet()), Pair(executableNoBinary, executablesApiService.runexecGet()).toString())
         }
+
+        config.tmp = tmpSave
+        config.executables = executablesSave
     }
 }
