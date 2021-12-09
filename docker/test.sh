@@ -3,6 +3,7 @@
 IPs=(139.162.179.160 45.79.249.213 139.162.142.71)
 names=(worker1 worker2 worker3)
 PORT=8080
+input=../theta-restapi/src/test/resources/input.c
 
 # Uncomment for theta/runexec reinit
 # for ip in ${IPs[@]}
@@ -50,19 +51,22 @@ curl --request POST \
         "name": "'${names[2]}'"
 }' > /dev/null 2>&1
 
+
+base64task=$(base64 -w 0 ../theta-restapi/src/test/resources/input.c)
+
 echo "Sending task #1"
 id1=$(curl --request POST \
   --url http://${IPs[0]}:$PORT/tasks \
   --header 'Content-Type: application/json' \
   --header 'X-API-KEY: xApiKey' \
-  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
+  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"'$base64task'"}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
 
 echo "Sending task #2"
 id2=$(curl --request POST \
   --url http://${IPs[0]}:$PORT/tasks \
   --header 'Content-Type: application/json' \
   --header 'X-API-KEY: xApiKey' \
-  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"dm9pZCByZWFjaF9lcnJvcigpe30KZXh0ZXJuIGludCBfX1ZFUklGSUVSX25vbmRldF9pbnQoKTsKaW50IG1haW4oKSB7CiAgICBpbnQgYSA9IF9fVkVSSUZJRVJfbm9uZGV0X2ludCgpOwogICAgaWYoIGEgJSAyICkgcmVhY2hfZXJyb3IoKTsKfQ=="}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
+  --data '{"input":{"inputs":[{"name":"inputfile.c","content":"'$base64task'"}]},"userId":0,"parameters":["inputfile.c","--portfolio","COMPLEX"],"benchmark":{"useRunexec":true,"useScheduling":true,"resources":{"logical_cpu":2,"ram_G":1,"timeout_s":10}}}' 2>/dev/null |  jq -r ".id")
 
 echo "Waiting for tasks to finish..."
 sleep 5
