@@ -29,8 +29,10 @@ class WorkersApiServiceImpl(@Autowired val repository: WorkerRepository, @Autowi
     }
 
     override suspend fun workersPost(workerDto: InWorkerDto): IdObjectDto {
-        val idObjectDto = IdObjectDto(repository.save(Worker(workerDto)).id)
-        taskSchedulerRunner.discoverWorkers()
-        return idObjectDto
+        return if(repository.findAll().filter { it.address == workerDto.address }.count() == 0) {
+            val idObjectDto = IdObjectDto(repository.save(Worker(workerDto)).id)
+            taskSchedulerRunner.discoverWorkers()
+            idObjectDto
+        } else IdObjectDto(-1)
     }
 }

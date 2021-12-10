@@ -56,8 +56,10 @@ class TaskSchedulerRunner (
                     val workerWrapper = WorkerWrapper(it)
                     workers[workerWrapper] = null
                     workerLookup[it.id] = workerWrapper
+                    println("Found new worker $it")
                 } else if (workerLookup[it.id]?.worker != it) {
                     workerLookup[it.id]?.worker = it
+                    println("Updated worker $it")
                 }
             }
             keys.forEach {
@@ -73,7 +75,7 @@ class TaskSchedulerRunner (
     @Scheduled(fixedDelay = 1000)
     private fun allocateTasks() {
         try {
-            taskAllocation.forEach {
+            LinkedHashMap(taskAllocation).forEach {
                 val task = it.key
                 val status = it.value.getStatus(task)
                 if (status != null) {
@@ -93,7 +95,7 @@ class TaskSchedulerRunner (
                 }
             }
 
-            HashMap(workers).forEach {
+            LinkedHashMap(workers).forEach {
                 if (it.value == null) {
                     val resources = it.key.getResources()
                     if (resources != null) {

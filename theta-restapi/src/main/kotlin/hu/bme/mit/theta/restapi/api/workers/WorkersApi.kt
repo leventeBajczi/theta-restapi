@@ -65,6 +65,6 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         consumes = ["application/json"]
     )
     suspend fun workersPost( @RequestBody workerDto: InWorkerDto): ResponseEntity<IdObjectDto> {
-        return handleRESTStatus {service.workersIdPut(workerDto)}
+        return handleRESTStatus {service.workersPost(workerDto)}
     }
 }

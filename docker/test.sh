@@ -5,7 +5,6 @@ names=(worker1 worker2 worker3)
 PORT=8080
 input=../theta-restapi/src/test/resources/input.c
 
-# Uncomment for theta/runexec reinit
 # for ip in ${IPs[@]}
 # do
 # echo "Sending theta to " $ip

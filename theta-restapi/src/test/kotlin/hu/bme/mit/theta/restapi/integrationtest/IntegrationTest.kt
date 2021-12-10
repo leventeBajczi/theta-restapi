@@ -4,6 +4,7 @@ import hu.bme.mit.theta.restapi.ApplicationConfiguration
 import hu.bme.mit.theta.restapi.model.dtos.inout.IdObjectDto
 import hu.bme.mit.theta.restapi.model.dtos.output.OutTaskDto
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
@@ -26,6 +27,7 @@ class IntegrationTest(
 ) {
 
     @Test
+    @Disabled
     fun testDirectTheta() {
         val tmpSave = config.tmp
         val executablesSave = config.executables
@@ -81,6 +83,7 @@ class IntegrationTest(
 
 
     @Test
+    @Disabled
     fun testRunexec() {
         val tmpSave = config.tmp
         val executablesSave = config.executables
