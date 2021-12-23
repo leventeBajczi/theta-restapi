@@ -27,7 +27,6 @@ class IntegrationTest(
 ) {
 
     @Test
-    @Disabled
     fun testDirectTheta() {
         val tmpSave = config.tmp
         val executablesSave = config.executables
@@ -83,7 +82,6 @@ class IntegrationTest(
 
 
     @Test
-    @Disabled
     fun testRunexec() {
         val tmpSave = config.tmp
         val executablesSave = config.executables

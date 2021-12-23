@@ -14,6 +14,7 @@ import hu.bme.mit.theta.restapi.repository.WorkerRepository
 import hu.bme.mit.theta.restapi.utils.iface.ThetaRunner
 import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.AutoConfigureOrder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -31,7 +32,7 @@ class TaskSchedulerRunner (
     @Autowired val taskRepository: TaskRepository,
     @Autowired val config: ApplicationConfiguration,
     @Autowired val fileRepository: FileRepository,
-    @Autowired val workerRepository: WorkerRepository
+    @Autowired val workerRepository: WorkerRepository,
     ) : ThetaRunner{
 
     private val taskAllocation = LinkedHashMap<Task, WorkerWrapper>()
@@ -41,8 +42,7 @@ class TaskSchedulerRunner (
     private val queue = LinkedBlockingQueue<Task>()
 
     override fun runTask(task: Task) {
-        println("Running scheduled task $task")
-        queue.add(task)
+        queue.add(task) 
     }
 
     @Scheduled(fixedDelay = 30_000)
@@ -56,10 +56,8 @@ class TaskSchedulerRunner (
                     val workerWrapper = WorkerWrapper(it)
                     workers[workerWrapper] = null
                     workerLookup[it.id] = workerWrapper
-                    println("Found new worker $it")
                 } else if (workerLookup[it.id]?.worker != it) {
                     workerLookup[it.id]?.worker = it
-                    println("Updated worker $it")
                 }
             }
             keys.forEach {
