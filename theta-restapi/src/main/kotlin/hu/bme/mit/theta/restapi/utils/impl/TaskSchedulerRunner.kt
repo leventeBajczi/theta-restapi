@@ -118,8 +118,9 @@ class TaskSchedulerRunner (
                             val task: Task? = queue.peek()
                             if (task != null) {
                                 if (task.logicalCpu <= resources.logicalCpu ?: 0 &&
-                                    task.ramMb <= resources.ramM ?: 0 && thetaVersions.contains(task.toolVersion) &&
-                                    runexecVersions.contains(task.runexecVersion)
+                                    task.ramMb <= resources.ramM ?: 0 &&
+                                    (task.toolVersion == null || thetaVersions.contains(task.toolVersion)) &&
+                                    (task.runexecVersion == null || runexecVersions.contains(task.runexecVersion))
                                 ) {
                                     val dispatchedTaskId = it.key.dispatchTask(task)
                                     if (dispatchedTaskId != null) {
