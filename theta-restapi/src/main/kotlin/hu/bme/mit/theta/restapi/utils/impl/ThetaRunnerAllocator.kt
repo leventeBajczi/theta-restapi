@@ -16,29 +16,9 @@ class ThetaRunnerAllocator(
     @Autowired
     val directThetaRunner: DirectThetaRunner,
 ) : ThetaRunner {
-    private val workers = 1
-    private val executorService: ExecutorService = Executors.newFixedThreadPool(workers)
-    var counter = 0
-
-    override fun runTask(task: Task) {
-        synchronized(executorService) {
-            when {
-                task.useScheduling && counter >= workers  -> taskSchedulerRunner.runTask(task)
-                task.useRunexec -> {
-                    counter++
-                    executorService.submit {
-                        runexecRunner.runTask(task)
-                        counter--
-                    }
-                }
-                else -> {
-                    counter++
-                    executorService.submit {
-                        directThetaRunner.runTask(task)
-                        counter--
-                    }
-                }
-            }
-        }
+    override fun runTask(task: Task) = when {
+        task.useScheduling -> taskSchedulerRunner.runTask(task)
+        task.useRunexec -> runexecRunner.runTask(task)
+        else -> directThetaRunner.runTask(task)
     }
 }

@@ -52,14 +52,16 @@ class RunexecRunner(
         var usedCpuTimeS = 0.0
         var usedWallTimeS = 0.0
         var usedRamB = 0.0
+        var retval = 0
         runexecStdout.forEachLine {
             val split = it.split("=")
             when(split[0]) {
                 "walltime" -> usedWallTimeS = split[1].substring(0 until split[1].length-1).toDouble()
                 "cputime" -> usedCpuTimeS = split[1].substring(0 until split[1].length-1).toDouble()
                 "memory" -> usedRamB = split[1].substring(0 until split[1].length-1).toDouble()
+                "returnvalue" -> retval = split[1].toInt()
         } }
-        val newTask: Task = task.copy(usedTimeS = usedWallTimeS, usedCpuTimeS = usedCpuTimeS, usedRamMb = usedRamB * 1e-6, stderr = null, stdout = stdout)
+        val newTask: Task = task.copy(usedTimeS = usedWallTimeS, usedCpuTimeS = usedCpuTimeS, usedRamMb = usedRamB * 1e-6, stderr = null, stdout = stdout, retval = retval)
         taskRepository.save(newTask)
     }
 }

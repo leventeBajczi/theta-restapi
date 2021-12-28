@@ -5,6 +5,7 @@ import hu.bme.mit.theta.restapi.model.dtos.inout.MultiInputDto
 import hu.bme.mit.theta.restapi.model.entities.Task
 import hu.bme.mit.theta.restapi.model.enums.Priority
 import hu.bme.mit.theta.restapi.repository.FileRepository
+import java.util.*
 
 /**
  * 
@@ -43,7 +44,13 @@ data class OutTaskDto(
         task.parameters,
         task.priority,
         OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
-        doneStatus = if(task.stdout != null) OutStatusDto(task.usedRamMb, task.usedTimeS, task.usedCpuTimeS, task.stdout.readText(), task.stderr?.readText()) else null
+        doneStatus = if(task.stdout != null) OutStatusDto(
+            task.usedRamMb,
+            task.usedTimeS,
+            task.usedCpuTimeS,
+            stdout = Base64.getEncoder().encodeToString(task.stdout?.readBytes() ?: ByteArray(0)),
+            stderr = Base64.getEncoder().encodeToString(task.stderr?.readBytes() ?: ByteArray(0)),
+            retval = task.retval) else null
     ) {}
 
 }

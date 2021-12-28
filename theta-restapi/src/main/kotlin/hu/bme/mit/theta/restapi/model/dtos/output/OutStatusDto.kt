@@ -7,6 +7,7 @@ data class OutStatusDto(
     @field:JsonProperty("usedTimeS", required = false) val usedTimeS: Double? = null,
     @field:JsonProperty("usedCpuTimeS", required = false) val usedCpuTimeS: Double? = null,
     @field:JsonProperty("stdout", required = false) val stdout: String? = null,
-    @field:JsonProperty("stderr", required = false) val stderr: String? = null
+    @field:JsonProperty("stderr", required = false) val stderr: String? = null,
+    @field:JsonProperty("retval", required = false) val retval: Int? = null
 )
 

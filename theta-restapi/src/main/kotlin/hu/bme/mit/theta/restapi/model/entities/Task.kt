@@ -37,6 +37,7 @@ data class Task(
     val usedCpuTimeS: Double? = null,
     val stdout: File? = null,
     val stderr: File? = null,
+    val retval: Int? = null
 ) {
     constructor(task: InTaskDto, fileRepository: FileRepository, config: ApplicationConfiguration) : this(
         inputIds = task.input.inputs.map {

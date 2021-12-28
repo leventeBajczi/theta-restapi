@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.DefaultUriBuilderFactory
 import java.io.File
+import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
 
@@ -33,6 +34,7 @@ class TaskSchedulerRunner (
     @Autowired val config: ApplicationConfiguration,
     @Autowired val fileRepository: FileRepository,
     @Autowired val workerRepository: WorkerRepository,
+    @Autowired val runexecRunner: RunexecRunner
     ) : ThetaRunner{
 
     private val taskAllocation = LinkedHashMap<Task, WorkerWrapper>()
@@ -40,6 +42,8 @@ class TaskSchedulerRunner (
     private val workers = LinkedHashMap<WorkerWrapper, Task?>()
     private val workerLookup = LinkedHashMap<Int, WorkerWrapper>()
     private val queue = LinkedBlockingQueue<Task>()
+    private var localCounter = 0
+    private val executor = Executors.newSingleThreadExecutor()
 
     override fun runTask(task: Task) {
         queue.add(task) 
@@ -72,6 +76,7 @@ class TaskSchedulerRunner (
 
     @Scheduled(fixedDelay = 1000)
     private fun allocateTasks() {
+        println("Queue size: ${queue.size}")
         try {
             LinkedHashMap(taskAllocation).forEach {
                 val task = it.key
@@ -113,6 +118,17 @@ class TaskSchedulerRunner (
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            synchronized(queue) {
+                if(queue.isNotEmpty() && localCounter == 0) {
+                    localCounter++
+                    val task = queue.take()
+                    executor.submit {
+                        runexecRunner.runTask(task)
+                        localCounter--
                     }
                 }
             }
