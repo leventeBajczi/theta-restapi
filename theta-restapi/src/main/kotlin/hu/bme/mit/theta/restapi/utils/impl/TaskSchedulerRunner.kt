@@ -11,19 +11,25 @@ import hu.bme.mit.theta.restapi.model.entities.Worker
 import hu.bme.mit.theta.restapi.repository.FileRepository
 import hu.bme.mit.theta.restapi.repository.TaskRepository
 import hu.bme.mit.theta.restapi.repository.WorkerRepository
+import hu.bme.mit.theta.restapi.utils.iface.ExecutableUtils
 import hu.bme.mit.theta.restapi.utils.iface.ThetaRunner
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.AutoConfigureOrder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.util.DefaultUriBuilderFactory
 import java.io.File
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -34,7 +40,8 @@ class TaskSchedulerRunner (
     @Autowired val config: ApplicationConfiguration,
     @Autowired val fileRepository: FileRepository,
     @Autowired val workerRepository: WorkerRepository,
-    @Autowired val runexecRunner: RunexecRunner
+    @Autowired val runexecRunner: RunexecRunner,
+    @Autowired val executableUtils: ExecutableUtils
     ) : ThetaRunner{
 
     private val taskAllocation = LinkedHashMap<Task, WorkerWrapper>()
@@ -69,6 +76,9 @@ class TaskSchedulerRunner (
                 workers.remove(workerWrapper)
                 workerLookup.remove(it)
             }
+            for (workerEntry in workerLookup) {
+                workerEntry.value.updateBinaries()
+            }
         } catch(e: Exception) {
             e.printStackTrace()
         }
@@ -102,11 +112,14 @@ class TaskSchedulerRunner (
                 if (it.value == null) {
                     val resources = it.key.getResources()
                     if (resources != null) {
+                        val thetaVersions = it.key.getInstalledVersions("theta")
+                        val runexecVersions = it.key.getInstalledVersions("runexec")
                         synchronized(queue) {
                             val task: Task? = queue.peek()
                             if (task != null) {
                                 if (task.logicalCpu <= resources.logicalCpu ?: 0 &&
-                                    task.ramMb <= resources.ramM ?: 0
+                                    task.ramMb <= resources.ramM ?: 0 && thetaVersions.contains(task.toolVersion) &&
+                                    runexecVersions.contains(task.runexecVersion)
                                 ) {
                                     val dispatchedTaskId = it.key.dispatchTask(task)
                                     if (dispatchedTaskId != null) {
@@ -141,6 +154,66 @@ class TaskSchedulerRunner (
 
     private inner class WorkerWrapper(var worker: Worker) {
         private val restTemplate: RestTemplate = restTemplate(worker.address)
+
+        init {
+            updateBinaries()
+        }
+
+        fun updateBinaries() {
+            synchronized(this){
+                GlobalScope.async {
+                    val headers = HttpHeaders()
+                    headers.contentType = MediaType.MULTIPART_FORM_DATA
+
+                    val installedToolVersions = getInstalledVersions("theta")
+                    for (toolVersion in executableUtils.getAllExecutableVersions("theta.zip")) {
+                        if (!installedToolVersions.contains(toolVersion.key)) {
+                            val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+                            body.add("binary", File(executableUtils.getExecutableWithPath("theta.zip", toolVersion.key)))
+                            body.add("version", toolVersion.key)
+                            body.add("relativePath", executableUtils.getRelativePath("theta.zip", toolVersion.key))
+                            val requestEntity = HttpEntity(body, headers)
+
+                            val restTemplate = RestTemplate()
+                            try {
+                                restTemplate.put("/theta", requestEntity)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                    val installedRunexecVersions = getInstalledVersions("runexec")
+                    for (runexecVersion in executableUtils.getAllExecutableVersions("runexec.zip")) {
+                        if (!installedRunexecVersions.contains(runexecVersion.key)) {
+                            val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+                            body.add(
+                                "binary",
+                                File(executableUtils.getExecutableWithPath("runexec.zip", runexecVersion.key))
+                            )
+                            body.add("version", runexecVersion.key)
+                            body.add("relativePath", executableUtils.getRelativePath("runexec.zip", runexecVersion.key))
+                            val requestEntity = HttpEntity(body, headers)
+
+                            val restTemplate = RestTemplate()
+                            try {
+                                restTemplate.put("/runexec", requestEntity)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        fun getInstalledVersions(s: String) : List<*> {
+            try {
+                return restTemplate.getForObject("/$s/versions", List::class.java)!!
+            } catch(e: Exception) {
+                e.printStackTrace()
+                throw e
+            }
+        }
 
         fun getResources() : OutResourcesDto? {
             try {

@@ -27,6 +27,15 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         return handleRESTStatus {service.runexecGet()}
     }
 
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/runexec/versions"],
+        produces = ["application/json"]
+    )
+    suspend fun runexecVersions(): ResponseEntity<List<String>> {
+        return handleRESTStatus {service.runexecVersions()}
+    }
+
 
     @RequestMapping(
         method = [RequestMethod.PUT],
@@ -52,6 +61,15 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
     )
     suspend fun thetaGet(): ResponseEntity<OutExecutableDto> {
         return handleRESTStatus {service.thetaGet()}
+    }
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/theta/versions"],
+        produces = ["application/json"]
+    )
+    suspend fun thetaVersions(): ResponseEntity<List<String>> {
+        return handleRESTStatus {service.thetaVersions()}
     }
 
 

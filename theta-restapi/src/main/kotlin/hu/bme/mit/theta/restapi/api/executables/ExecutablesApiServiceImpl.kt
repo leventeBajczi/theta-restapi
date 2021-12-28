@@ -15,6 +15,9 @@ class ExecutablesApiServiceImpl(
         return executableUtils.getStatus("runexec.zip")
     }
 
+    override suspend fun runexecVersions(): List<String> =
+        executableUtils.getAllExecutableVersions("runexec.zip").keys.toList()
+
     override suspend fun runexecPut(executableDto: InExecutableDto): OutExecutableDto {
         return executableUtils.updateExecutable("runexec.zip", executableDto)
     }
@@ -22,6 +25,9 @@ class ExecutablesApiServiceImpl(
     override suspend fun thetaGet(): OutExecutableDto {
         return executableUtils.getStatus("theta.zip")
     }
+
+    override suspend fun thetaVersions(): List<String> =
+        executableUtils.getAllExecutableVersions("theta.zip").keys.toList()
 
     override suspend fun thetaPut(executableDto: InExecutableDto): OutExecutableDto {
         return executableUtils.updateExecutable("theta.zip", executableDto)

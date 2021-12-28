@@ -7,9 +7,13 @@ interface ExecutablesApiService {
 
     suspend fun runexecGet(): OutExecutableDto
 
+    suspend fun runexecVersions(): List<String>
+
     suspend fun runexecPut(executableDto: InExecutableDto): OutExecutableDto
 
     suspend fun thetaGet(): OutExecutableDto
+
+    suspend fun thetaVersions(): List<String>
 
     suspend fun thetaPut(executableDto: InExecutableDto): OutExecutableDto
 }
