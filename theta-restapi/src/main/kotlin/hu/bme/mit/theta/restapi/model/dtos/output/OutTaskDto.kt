@@ -33,7 +33,11 @@ data class OutTaskDto(
 
     @field:JsonProperty("benchmark") val benchmark: OutTaskBenchmarkDto? = null,
 
-    @field:JsonProperty("doneStatus") val doneStatus: OutStatusDto? = null
+    @field:JsonProperty("doneStatus") val doneStatus: OutStatusDto? = null,
+
+    @field:JsonProperty("toolVersion") val toolVersion: String? = null,
+
+    @field:JsonProperty("runexecVersion") val runexecVersion: String? = null,
 ) {
 
     constructor(task: Task, fileRepository: FileRepository) : this(
@@ -50,7 +54,9 @@ data class OutTaskDto(
             task.usedCpuTimeS,
             stdout = Base64.getEncoder().encodeToString(task.stdout?.readBytes() ?: ByteArray(0)),
             stderr = Base64.getEncoder().encodeToString(task.stderr?.readBytes() ?: ByteArray(0)),
-            retval = task.retval) else null
+            retval = task.retval) else null,
+        toolVersion = task.toolVersion,
+        runexecVersion = task.runexecVersion
     ) {}
 
 }

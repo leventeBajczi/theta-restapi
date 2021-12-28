@@ -11,7 +11,7 @@ data class User(
     val id: Int = 0,
     val name: String,
     @ElementCollection
-    val permissions: List<Permissions> = emptyList(),
+    val permissions: List<Permissions> = arrayListOf(),
     val logicalCpuQuota: Int = -1,
     val ramMbQuota: Int = -1,
     val timeshareSQuota: Int = -1,

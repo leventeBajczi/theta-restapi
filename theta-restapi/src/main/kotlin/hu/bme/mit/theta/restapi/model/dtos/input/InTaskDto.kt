@@ -24,7 +24,11 @@ data class InTaskDto(
 
     @field:JsonProperty("priority") val priority: Priority? = Priority.BESTEFFORT,
 
-    @field:JsonProperty("benchmark") val benchmark: InTaskBenchmarkDto? = null
+    @field:JsonProperty("benchmark") val benchmark: InTaskBenchmarkDto? = null,
+
+    @field:JsonProperty("toolVersion") val toolVersion: String? = null,
+
+    @field:JsonProperty("runexecVersion") val runexecVersion: String? = null,
 ) {
     constructor(task: Task, fileRepository: FileRepository) : this(
         task.readInputs(fileRepository, true),
@@ -32,6 +36,8 @@ data class InTaskDto(
         task.parameters,
         task.priority,
         InTaskBenchmarkDto(InResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
+        task.toolVersion,
+        task.runexecVersion,
     )
 }
 

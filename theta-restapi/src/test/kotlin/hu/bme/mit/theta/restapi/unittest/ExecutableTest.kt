@@ -53,15 +53,11 @@ class ExecutableTest(
         config.tmp = tempDir2.absolutePathString()
         val executable = InExecutableDto(
             version = "SampleVersion",
-            description = "SampleDescription",
-            binaryBytes = "BinaryContent".toByteArray(),
-            commit = "SampleCommit",
+            binaryBytes =  this::class.java.getResource("/theta.zip").readBytes(),
             relativePath = "RelativePath"
         )
         val executableNoBinary = InExecutableDto(
             version = "SampleVersion",
-            description = "SampleDescription",
-            commit = "SampleCommit",
             relativePath = "RelativePath"
         )
         runBlocking {

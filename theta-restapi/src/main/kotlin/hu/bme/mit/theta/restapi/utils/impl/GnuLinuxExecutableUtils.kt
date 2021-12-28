@@ -22,56 +22,53 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
                 throw NoSuchElement(s + " has no installed candidate.")
             }
             val version = try {
-                File(folder.path + "." + "version.txt").readText()
-            } catch (e: IOException) {
-                "unkown"
-            }
-            val commit = try {
-                File(folder.path + "." + "commit.txt").readText()
-            } catch (e: IOException) {
-                null
-            }
-            val description = try {
-                File(folder.path + "." + "description.txt").readText()
+                File(folder.path + File.separator + "version.txt").readText()
             } catch (e: IOException) {
                 "unkown"
             }
             val relativePath = try {
-                File(folder.path + "." + "relativePath.txt").readText()
+                File(folder.path + File.separator + "relativePath.txt").readText()
             } catch (e: IOException) {
                 "unkown"
             }
-            return OutExecutableDto(version = version, commit = commit, description = description, relativePath = relativePath)
+            return OutExecutableDto(version = version, relativePath = relativePath)
         }
     }
 
     override fun updateExecutable(s: String, executable: InExecutableDto) : OutExecutableDto {
         synchronized(sync) {
-            val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
+            val folder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")) + executable.version)
+            val latestFolder = File(config.executables + File.separator + s.substring(0, s.lastIndexOf(".")))
+            if(latestFolder.exists()) latestFolder.deleteRecursively()
             if (folder.exists() && folder.isDirectory) {
                 folder.deleteRecursively()
             }
             folder.mkdirs()
             val file = File(config.executables + File.separator + s)
-            file.delete()
+            if(file.exists()) file.delete()
             file.writeBytes(executable.binaryBytes!!)
             arrayOf("unzip",file.absolutePath,"-d",folder.absolutePath).runCommand(File(config.tmp), 1, TimeUnit.MINUTES)
-            File(folder.path + "." + "description.txt").writeText(executable.description)
-            File(folder.path + "." + "relativePath.txt").writeText(executable.relativePath)
-            if(executable.commit != null) File(folder.path + "." + "commit.txt").writeText(executable.commit)
-            File(folder.path + "." + "version.txt").writeText(executable.version)
+            arrayOf("ln", "-sf", folder.absolutePath, latestFolder.absolutePath).runCommand(File(config.tmp))
+            File(folder.path + File.separator + "relativePath.txt").writeText(executable.relativePath)
+            File(folder.path + File.separator + "version.txt").writeText(executable.version)
 
             return getStatus(s)
         }
 
     }
 
-    override fun getExecutableWithPath(s: String): String {
-        val path = config.executables +
-                File.separator +
-                s.substring(0, s.lastIndexOf("."))
+    override fun getExecutableWithPath(s: String, version: String?): String {
+        val path = if(version == null) {
+            config.executables +
+            File.separator +
+            s.substring(0, s.lastIndexOf("."))
+        } else {
+            config.executables +
+            File.separator +
+            s.substring(0, s.lastIndexOf(".")) + version
+        }
         return path +
                 File.separator +
-                File("$path.relativePath.txt").readText()
+                File("$path${File.separator}relativePath.txt").readText()
     }
 }

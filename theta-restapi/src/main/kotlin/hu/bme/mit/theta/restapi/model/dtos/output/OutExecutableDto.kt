@@ -12,11 +12,7 @@ data class OutExecutableDto(
 
     @field:JsonProperty("version", required = true) val version: String,
 
-    @field:JsonProperty("description", required = true) val description: String,
-
     @field:JsonProperty("relativePath", required = true) val relativePath: String,
-
-    @field:JsonProperty("commit") val commit: String? = null
 ) {
 
 }

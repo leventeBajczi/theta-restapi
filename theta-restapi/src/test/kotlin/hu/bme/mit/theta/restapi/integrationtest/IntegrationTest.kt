@@ -39,10 +39,8 @@ class IntegrationTest(
             val thetaZipBytes = this::class.java.getResource("/theta.zip").readBytes()
             mockMvc.perform(multipart("/theta")
                 .file("binary", thetaZipBytes)
-                .param("commit", "SampleCommit")
                 .param("version", "SampleVersion")
-                .param("relativePath", "theta/theta-start.sh")
-                .param("description", "SampleDescription").with { request -> request.method = "PUT"; request }
+                .param("relativePath", "theta/theta-start.sh").with { request -> request.method = "PUT"; request }
             ).andExpect(status().isOk)
 
             val inputContent = Base64.getEncoder().encodeToString(this::class.java.getResource("/input.c").readBytes())
@@ -65,7 +63,7 @@ class IntegrationTest(
                     val map = ((it.asyncResult as ResponseEntity<*>).body as OutTaskDto?)
                     if (map?.doneStatus != null) {
                         done = true
-                        Assertions.assertTrue(map.doneStatus?.stdout!!.contains("SafetyResult Unsafe"))
+                        Assertions.assertTrue(String(Base64.getDecoder().decode(map.doneStatus?.stdout)!!).contains("SafetyResult Unsafe"))
                     } else {
                         counter--
                     }
@@ -73,8 +71,11 @@ class IntegrationTest(
                 Thread.sleep(1000)
             }
             Assertions.assertTrue(counter > 0, "Task did not finish in the given timeframe.")
+        } catch(e: Exception) {
+            e.printStackTrace()
+            throw e
         } finally {
-            tempFolder.deleteRecursively()
+                tempFolder.deleteRecursively()
         }
         config.tmp = tmpSave
         config.executables = executablesSave
@@ -95,18 +96,14 @@ class IntegrationTest(
             val thetaZipBytes = this::class.java.getResource("/theta.zip").readBytes()
             mockMvc.perform(multipart("/theta")
                 .file("binary", thetaZipBytes)
-                .param("commit", "SampleCommit")
                 .param("version", "SampleVersion")
-                .param("relativePath", "theta/theta-start.sh")
-                .param("description", "SampleDescription").with { request -> request.method = "PUT"; request }
+                .param("relativePath", "theta/theta-start.sh").with { request -> request.method = "PUT"; request }
             ).andExpect(status().isOk)
             val runexecZipBytes = this::class.java.getResource("/benchexec.zip").readBytes()
             mockMvc.perform(multipart("/runexec")
                 .file("binary", runexecZipBytes)
-                .param("commit", "SampleCommit")
                 .param("version", "SampleVersion")
-                .param("relativePath", "benchexec/bin/runexec")
-                .param("description", "SampleDescription").with { request -> request.method = "PUT"; request }
+                .param("relativePath", "benchexec/bin/runexec").with { request -> request.method = "PUT"; request }
             ).andExpect(status().isOk)
 
             val inputContent = Base64.getEncoder().encodeToString(this::class.java.getResource("/input.c").readBytes())
@@ -123,13 +120,13 @@ class IntegrationTest(
             Assertions.assertNotNull(id)
 
             var done = false
-            var counter = 10
+            var counter = 20
             while (!done && counter > 0) {
                 mockMvc.perform(get("/tasks/$id")).andDo {
                     val map = ((it.asyncResult as ResponseEntity<*>).body as OutTaskDto?)
                     if (map?.doneStatus != null) {
                         done = true
-                        Assertions.assertTrue(map.doneStatus?.stdout!!.contains("SafetyResult Unsafe"))
+                        Assertions.assertTrue(String(Base64.getDecoder().decode(map.doneStatus?.stdout)!!).contains("SafetyResult Unsafe"))
                         Assertions.assertNotNull(map.doneStatus?.usedCpuTimeS)
                         Assertions.assertNotNull(map.doneStatus?.usedTimeS)
                         Assertions.assertNotNull(map.doneStatus?.usedRamMb)

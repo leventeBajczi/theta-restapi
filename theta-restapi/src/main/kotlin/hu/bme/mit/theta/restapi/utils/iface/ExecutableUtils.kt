@@ -7,5 +7,5 @@ interface ExecutableUtils {
     fun getStatus(s: String): OutExecutableDto
     fun updateExecutable(s: String, executable: InExecutableDto): OutExecutableDto
 
-    fun getExecutableWithPath(s: String): String
+    fun getExecutableWithPath(s: String, version: String?): String
 }

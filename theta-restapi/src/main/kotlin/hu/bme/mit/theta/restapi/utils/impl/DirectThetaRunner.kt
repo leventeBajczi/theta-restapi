@@ -22,17 +22,29 @@ class DirectThetaRunner(
     override fun runTask(
         task: Task
     ) {
-        println("Running task $task")
-        val timeLimit = task.timeoutS
-        val inputs = task.inputIds.map { fileRepository.findById(it).orElseThrow() }.associateBy({it.name}, {it.fullPath})
-        val params = task.parameters.map { inputs.getOrDefault(it, it) }.toTypedArray()
-        val executable = executableUtils.getExecutableWithPath("theta.zip")
+        try {
+            println("Running task $task")
+            val timeLimit = task.timeoutS
+            val inputs = task.inputIds.map { fileRepository.findById(it).orElseThrow() }
+                .associateBy({ it.name }, { it.fullPath })
+            val params = task.parameters.map { inputs.getOrDefault(it, it) }.toTypedArray()
+            val executable = executableUtils.getExecutableWithPath("theta.zip", task.toolVersion)
 
-        val command = arrayOf(executable, *params)
-        val stopwatch = StopWatch()
-        stopwatch.start()
-        val (stdout, stderr) = command.runCommand(File(config.tmp), timeLimit.toLong(), TimeUnit.SECONDS)
-        val newTask: Task = task.copy(usedTimeS = stopwatch.totalTimeSeconds, stderr = stderr, stdout = stdout)
-        taskRepository.save(newTask)
+            val command = arrayOf(executable, *params)
+            val stopwatch = StopWatch()
+            stopwatch.start()
+            val (stdout, stderr) = command.runCommand(File(config.tmp), timeLimit.toLong(), TimeUnit.SECONDS)
+            val newTask: Task = task.copy(usedTimeS = stopwatch.totalTimeSeconds, stderr = stderr, stdout = stdout)
+            taskRepository.save(newTask)
+        } catch(e: Exception) {
+            e.printStackTrace()
+            val tmpFile = File.createTempFile("stderr", ".txt", File(config.tmp))
+            tmpFile.appendText(e.stackTraceToString())
+            val newTask: Task = task.copy(
+                stderr = tmpFile,
+                retval = -1
+            )
+            taskRepository.save(newTask)
+        }
     }
 }
