@@ -23,7 +23,6 @@ class RunexecRunner(
     ) {
         try {
             println("Running benchmark $task")
-            val timeLimit = task.timeoutS
             val inputs = task.inputIds.map { fileRepository.findById(it).orElseThrow() }
                 .associateBy({ it.name }, { it.fullPath })
             val runexecParams = mutableListOf("--read-only-dir", "/", "--overlay-dir", "/home")
@@ -33,7 +32,7 @@ class RunexecRunner(
             }
             if (task.logicalCpu > 0) {
                 runexecParams.add("--cores")
-                runexecParams.add(task.logicalCpu.toString())
+                runexecParams.add("0-${(task.logicalCpu-1).toString()}")
             }
             if (task.timeoutS > 0) {
                 runexecParams.add("--softtimelimit")
