@@ -22,7 +22,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         value = ["/tasks"],
         produces = ["application/json"]
     )
-    suspend fun tasksGet(): ResponseEntity<List<OutTaskDto>> {
+    suspend fun tasksGet(): ResponseEntity<*> {
         return handleRESTStatus {service.tasksGet()}
     }
 
@@ -33,7 +33,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksIdDelete( @PathVariable("id") id: Int
-    ): ResponseEntity<IdObjectDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {service.tasksIdDelete(id)}
     }
 
@@ -44,7 +44,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["application/json"]
     )
     suspend fun tasksIdGet( @PathVariable("id") id: Int
-    ): ResponseEntity<OutTaskDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {service.tasksIdGet(id)}
     }
 
@@ -55,7 +55,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         produces = ["multipart/form-data"]
     )
     suspend fun tasksIdInputGet( @PathVariable("id") id: Int
-    ): ResponseEntity<MultiInputDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {service.tasksIdInputGet(id)}
     }
 
@@ -67,7 +67,7 @@ class TasksApiController(@Autowired(required = true) val service: TasksApiServic
         consumes = ["application/json"]
     )
     suspend fun tasksPost( @RequestBody taskDto: InTaskDto
-    ): ResponseEntity<IdObjectDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {service.tasksPost(taskDto)}
     }
 }

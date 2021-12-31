@@ -20,7 +20,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         value = ["/workers"],
         produces = ["application/json"]
     )
-    suspend fun workersGet(): ResponseEntity<List<OutWorkerDto>> {
+    suspend fun workersGet(): ResponseEntity<*> {
         return handleRESTStatus {service.workersGet()}
     }
 
@@ -31,7 +31,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersIdDelete( @PathVariable("id") id: Int
-): ResponseEntity<IdObjectDto> {
+): ResponseEntity<*> {
         return handleRESTStatus {service.workersIdDelete(id)}
     }
 
@@ -42,7 +42,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"]
     )
     suspend fun workersIdGet( @PathVariable("id") id: Int
-): ResponseEntity<OutWorkerDto> {
+): ResponseEntity<*> {
         return handleRESTStatus {service.workersIdGet(id)}
     }
 
@@ -53,7 +53,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun workersIdPut( @PathVariable id: Int, @RequestBody workerDto: InWorkerDto): ResponseEntity<IdObjectDto> {
+    suspend fun workersIdPut( @PathVariable id: Int, @RequestBody workerDto: InWorkerDto): ResponseEntity<*> {
         return handleRESTStatus {service.workersIdPut(workerDto, id)}
     }
 
@@ -64,7 +64,7 @@ class WorkersApiController(@Autowired(required = true) val service: WorkersApiSe
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun workersPost( @RequestBody workerDto: InWorkerDto): ResponseEntity<IdObjectDto> {
+    suspend fun workersPost( @RequestBody workerDto: InWorkerDto): ResponseEntity<*> {
         return handleRESTStatus {service.workersPost(workerDto)}
     }
 }

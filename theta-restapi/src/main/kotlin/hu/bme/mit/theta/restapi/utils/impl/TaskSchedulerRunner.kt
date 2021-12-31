@@ -17,6 +17,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -26,10 +27,8 @@ import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.util.DefaultUriBuilderFactory
 import java.io.File
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -86,7 +85,6 @@ class TaskSchedulerRunner (
 
     @Scheduled(fixedDelay = 1000)
     private fun allocateTasks() {
-        println("Queue size: ${queue.size}")
         try {
             LinkedHashMap(taskAllocation).forEach {
                 val task = it.key
@@ -163,45 +161,60 @@ class TaskSchedulerRunner (
         fun updateBinaries() {
             synchronized(this){
                 GlobalScope.async {
-                    val headers = HttpHeaders()
-                    headers.contentType = MediaType.MULTIPART_FORM_DATA
+                    try {
+                        val headers = HttpHeaders()
+                        headers.contentType = MediaType.MULTIPART_FORM_DATA
 
-                    val installedToolVersions = getInstalledVersions("theta")
-                    for (toolVersion in executableUtils.getAllExecutableVersions("theta.zip")) {
-                        if (!installedToolVersions.contains(toolVersion.key)) {
-                            val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-                            body.add("binary", File(executableUtils.getExecutableWithPath("theta.zip", toolVersion.key)))
-                            body.add("version", toolVersion.key)
-                            body.add("relativePath", executableUtils.getRelativePath("theta.zip", toolVersion.key))
-                            val requestEntity = HttpEntity(body, headers)
+                        val installedToolVersions = getInstalledVersions("theta")
+                        for (toolVersion in executableUtils.getAllExecutableVersions("theta.zip")) {
+                            if (!installedToolVersions.contains(toolVersion.key)) {
+                                val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+                                val zipFile = executableUtils.getArchive("theta.zip", toolVersion.key)
+                                body.add("binary", FileSystemResource(zipFile))
+                                body.add("version", toolVersion.key)
+                                body.add("relativePath", executableUtils.getRelativePath("theta.zip", toolVersion.key))
+                                val requestEntity = HttpEntity(body, headers)
 
-                            val restTemplate = RestTemplate()
-                            try {
-                                restTemplate.put("/theta", requestEntity)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                                try {
+                                    System.err.println("Sending theta to " + worker.name)
+                                    restTemplate.put("/theta", requestEntity)
+                                    System.err.println("Sent theta to " + worker.name)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                } finally {
+                                    zipFile.delete()
+                                }
                             }
                         }
-                    }
-                    val installedRunexecVersions = getInstalledVersions("runexec")
-                    for (runexecVersion in executableUtils.getAllExecutableVersions("runexec.zip")) {
-                        if (!installedRunexecVersions.contains(runexecVersion.key)) {
-                            val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-                            body.add(
-                                "binary",
-                                File(executableUtils.getExecutableWithPath("runexec.zip", runexecVersion.key))
-                            )
-                            body.add("version", runexecVersion.key)
-                            body.add("relativePath", executableUtils.getRelativePath("runexec.zip", runexecVersion.key))
-                            val requestEntity = HttpEntity(body, headers)
+                        val installedRunexecVersions = getInstalledVersions("runexec")
+                        for (runexecVersion in executableUtils.getAllExecutableVersions("runexec.zip")) {
+                            if (!installedRunexecVersions.contains(runexecVersion.key)) {
+                                val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+                                val zipFile = executableUtils.getArchive("runexec.zip", runexecVersion.key)
+                                body.add(
+                                    "binary",
+                                    FileSystemResource(zipFile)
+                                )
+                                body.add("version", runexecVersion.key)
+                                body.add(
+                                    "relativePath",
+                                    executableUtils.getRelativePath("runexec.zip", runexecVersion.key)
+                                )
+                                val requestEntity = HttpEntity(body, headers)
 
-                            val restTemplate = RestTemplate()
-                            try {
-                                restTemplate.put("/runexec", requestEntity)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                                try {
+                                    System.err.println("Sending runexec to " + worker.name)
+                                    restTemplate.put("/runexec", requestEntity)
+                                    System.err.println("Sent runexec to " + worker.name)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                } finally {
+                                    zipFile.delete()
+                                }
                             }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }
@@ -252,10 +265,9 @@ class TaskSchedulerRunner (
         fun dispatchTask(task: Task) : Int? {
             return try {
                 val taskDto = InTaskDto(task, fileRepository)
-                val toSend = taskDto.copy(benchmark = taskDto.benchmark?.copy(useScheduling = false))
                 val headers = HttpHeaders()
                 headers.contentType = MediaType.APPLICATION_JSON
-                val entity: HttpEntity<InTaskDto> = HttpEntity(toSend, headers)
+                val entity: HttpEntity<InTaskDto> = HttpEntity(taskDto, headers)
                 restTemplate.postForObject("/tasks", entity, IdObjectDto::class.java)?.id
             } catch(e: Exception){
                 e.printStackTrace()

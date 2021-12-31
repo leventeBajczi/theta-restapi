@@ -59,42 +59,75 @@ class GnuLinuxExecutableUtils(@Autowired val config: ApplicationConfiguration) :
     }
 
     override fun getExecutableWithPath(s: String, version: String?): String {
-        val path = if(version == null) {
-            config.executables +
-            File.separator +
-            s.substring(0, s.lastIndexOf("."))
-        } else {
-            config.executables +
-            File.separator +
-            s.substring(0, s.lastIndexOf(".")) + version
+        synchronized(sync) {
+            val path = if (version == null) {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf("."))
+            } else {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf(".")) + version
+            }
+            return path +
+                    File.separator +
+                    File("$path${File.separator}relativePath.txt").readText()
         }
-        return path +
-                File.separator +
-                File("$path${File.separator}relativePath.txt").readText()
     }
 
     override fun getAllExecutableVersions(s: String): Map<String, File> {
-        val prefix =  s.substring(0, s.lastIndexOf("."))
-        val ret: MutableMap<String, File> = linkedMapOf()
-        for (version in File(config.executables).listFiles(FileFilter {
-            it.name.startsWith(prefix)
-        }) ?: arrayOf()) {
-            val versionString = version.name.substring(prefix.length)
-            ret[versionString] = File(getExecutableWithPath(s, versionString))
+        synchronized(sync) {
+            val prefix = s.substring(0, s.lastIndexOf("."))
+            val ret: MutableMap<String, File> = linkedMapOf()
+            for (version in File(config.executables).listFiles(FileFilter {
+                it.name.startsWith(prefix) && it.isDirectory && !it.name.equals(prefix)
+            }) ?: arrayOf()) {
+                val versionString = version.name.substring(prefix.length)
+                ret[versionString] = File(getExecutableWithPath(s, versionString))
+            }
+            return ret
         }
-        return ret
     }
 
     override fun getRelativePath(s: String, version: String?): String {
-        val path = if(version == null) {
-            config.executables +
-                    File.separator +
-                    s.substring(0, s.lastIndexOf("."))
-        } else {
-            config.executables +
-                    File.separator +
-                    s.substring(0, s.lastIndexOf(".")) + version
+        synchronized(sync) {
+
+            val path = if (version == null) {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf("."))
+            } else {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf(".")) + version
+            }
+            return File("$path${File.separator}relativePath.txt").readText()
         }
-        return File("$path${File.separator}relativePath.txt").readText()
+    }
+
+    override fun getArchive(s: String, version: String?): File {
+        synchronized(sync) {
+            val path = if (version == null) {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf("."))
+            } else {
+                config.executables +
+                        File.separator +
+                        s.substring(0, s.lastIndexOf(".")) + version
+            }
+            val tmpFile = File.createTempFile(s, ".zip", File(config.tmp))
+            try {
+                tmpFile.delete()
+                arrayOf("bash", "-c", "cd $path && zip -r ${tmpFile.absolutePath} *").runCommand(
+                    File(config.tmp),
+                    shouldThrow = true
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                throw e
+            }
+            return tmpFile
+        }
     }
 }

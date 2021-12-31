@@ -23,7 +23,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/runexec"],
         produces = ["application/json"]
     )
-    suspend fun runexecGet(): ResponseEntity<OutExecutableDto> {
+    suspend fun runexecGet(): ResponseEntity<*> {
         return handleRESTStatus {service.runexecGet()}
     }
 
@@ -32,7 +32,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/runexec/versions"],
         produces = ["application/json"]
     )
-    suspend fun runexecVersions(): ResponseEntity<List<String>> {
+    suspend fun runexecVersions(): ResponseEntity<*> {
         return handleRESTStatus {service.runexecVersions()}
     }
 
@@ -47,7 +47,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam(name = "binary", required = true) binary: MultipartFile,
         @RequestParam(name = "version", required = true) version: String,
         @RequestParam("relativePath", required = true) relativePath: String,
-    ): ResponseEntity<OutExecutableDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {service.runexecPut(
             InExecutableDto(version, binaryBytes = binary.bytes, relativePath = relativePath)
         )}
@@ -59,7 +59,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/theta"],
         produces = ["application/json"]
     )
-    suspend fun thetaGet(): ResponseEntity<OutExecutableDto> {
+    suspend fun thetaGet(): ResponseEntity<*> {
         return handleRESTStatus {service.thetaGet()}
     }
 
@@ -68,7 +68,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         value = ["/theta/versions"],
         produces = ["application/json"]
     )
-    suspend fun thetaVersions(): ResponseEntity<List<String>> {
+    suspend fun thetaVersions(): ResponseEntity<*> {
         return handleRESTStatus {service.thetaVersions()}
     }
 
@@ -83,7 +83,7 @@ class ExecutablesApiController(@Autowired(required = true) val service: Executab
         @RequestParam("binary", required=true) binary: MultipartFile,
         @RequestParam("version", required = true) version: String,
         @RequestParam("relativePath", required = true) relativePath: String,
-    ): ResponseEntity<OutExecutableDto> {
+    ): ResponseEntity<*> {
         return handleRESTStatus {
             service.thetaPut(
                 InExecutableDto(version = version, binaryBytes = binary.bytes, relativePath = relativePath)

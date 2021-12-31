@@ -21,7 +21,7 @@ class ResourcesApiController(@Autowired(required = true) val service: ResourcesA
         value = ["/resources"],
         produces = ["application/json"]
     )
-    suspend fun resourcesGet(): ResponseEntity<OutStaticResourcesDto> {
+    suspend fun resourcesGet(): ResponseEntity<*> {
         return handleRESTStatus {service.resourcesGet()}
     }
 }

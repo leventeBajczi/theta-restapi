@@ -20,7 +20,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         value = ["/users"],
         produces = ["application/json"]
     )
-    suspend fun usersGet(): ResponseEntity<List<OutUserDto>> {
+    suspend fun usersGet(): ResponseEntity<*> {
         return handleRESTStatus {service.usersGet()}
     }
 
@@ -31,7 +31,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"]
     )
     suspend fun usersIdDelete( @PathVariable("id") id: Int
-): ResponseEntity<IdObjectDto> {
+): ResponseEntity<*> {
         return handleRESTStatus {service.usersIdDelete(id)}
     }
 
@@ -42,7 +42,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"]
     )
     suspend fun usersIdGet( @PathVariable("id") id: Int
-): ResponseEntity<OutUserDto> {
+): ResponseEntity<*> {
         return handleRESTStatus {service.usersIdGet(id)}
     }
 
@@ -53,7 +53,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun usersIdPut( @PathVariable id: Int, @RequestBody userDto: InUserDto): ResponseEntity<IdObjectDto> {
+    suspend fun usersIdPut( @PathVariable id: Int, @RequestBody userDto: InUserDto): ResponseEntity<*> {
         return handleRESTStatus {service.usersIdPut(userDto, id)}
     }
 
@@ -64,7 +64,7 @@ class UsersApiController(@Autowired(required = true) val service: UsersApiServic
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    suspend fun usersPost( @RequestBody userDto: InUserDto): ResponseEntity<IdObjectDto> {
+    suspend fun usersPost( @RequestBody userDto: InUserDto): ResponseEntity<*> {
         return handleRESTStatus {service.usersIdPut(userDto)}
     }
 }

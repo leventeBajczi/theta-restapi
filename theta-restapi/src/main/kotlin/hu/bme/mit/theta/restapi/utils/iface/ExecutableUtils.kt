@@ -13,4 +13,5 @@ interface ExecutableUtils {
     fun getAllExecutableVersions(s: String): Map<String, File>
 
     fun getRelativePath(s: String, version: String? = null): String
+    fun getArchive(s: String, version: String? = null): File
 }
