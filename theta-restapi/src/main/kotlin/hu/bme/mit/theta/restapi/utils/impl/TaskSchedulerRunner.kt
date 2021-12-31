@@ -29,8 +29,11 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.DefaultUriBuilderFactory
 import java.io.File
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.LinkedHashSet
 
 
 @Component
@@ -52,6 +55,7 @@ class TaskSchedulerRunner (
     private val executor = Executors.newSingleThreadExecutor()
 
     override fun runTask(task: Task) {
+        println("Received task $task")
         queue.add(task) 
     }
 
@@ -92,15 +96,17 @@ class TaskSchedulerRunner (
                 if (status != null) {
                     val tempStdout = File.createTempFile("stdout", ".txt", File(config.tmp))
                     val tempStderr = File.createTempFile("stderr", ".txt", File(config.tmp))
-                    tempStdout.writeText(status.stdout ?: "")
-                    tempStderr.writeText(status.stderr ?: "")
+                    tempStdout.writeBytes(Base64.getDecoder().decode(status.stdout ?: ""))
+                    tempStderr.writeBytes(Base64.getDecoder().decode(status.stderr ?: ""))
                     taskRepository.save(
                         task.copy(
                             usedTimeS = status.usedTimeS,
                             usedCpuTimeS = status.usedCpuTimeS,
                             usedRamMb = status.usedRamMb,
                             stdout = tempStdout,
-                            stderr = tempStderr
+                            stderr = tempStderr,
+                            retval = status.retval,
+                            terminationreason = status.terminationreason
                         )
                     )
                 }
@@ -115,13 +121,14 @@ class TaskSchedulerRunner (
                         synchronized(queue) {
                             val task: Task? = queue.peek()
                             if (task != null) {
-                                if (task.logicalCpu <= resources.logicalCpu ?: 0 &&
-                                    task.ramMb <= resources.ramM ?: 0 &&
-                                    (task.toolVersion == null || thetaVersions.contains(task.toolVersion)) &&
-                                    (task.runexecVersion == null || runexecVersions.contains(task.runexecVersion))
+                                if (task.logicalCpu <= (resources.logicalCpu ?: 0) &&
+                                    task.ramMb <= (resources.ramM ?: 0) &&
+                                    ((task.toolVersion == null && thetaVersions.isNotEmpty()) || thetaVersions.contains(task.toolVersion)) &&
+                                    ((task.runexecVersion == null && runexecVersions.isNotEmpty()) || runexecVersions.contains(task.runexecVersion))
                                 ) {
                                     val dispatchedTaskId = it.key.dispatchTask(task)
                                     if (dispatchedTaskId != null) {
+                                        println("Dispatched to ${it.key.worker} task $task")
                                         workers[it.key] = task
                                         taskAllocation[task] = it.key
                                         taskForeignKeyMap[task] = dispatchedTaskId
@@ -230,12 +237,17 @@ class TaskSchedulerRunner (
         }
 
         fun getResources() : OutResourcesDto? {
-            try {
-                return restTemplate.getForObject("/resources", OutResourcesDto::class.java)
-            } catch(e: Exception) {
-                e.printStackTrace()
-                throw e
+            var toThrow: Exception = Exception()
+            repeat(5) {
+                try {
+                    return restTemplate.getForObject("/resources", OutResourcesDto::class.java)
+                } catch (e: Exception) {
+                    toThrow = e
+                    Thread.sleep(100)
+                }
             }
+            toThrow.printStackTrace()
+            throw toThrow
         }
 
         fun getStatus(task: Task) : OutStatusDto? {

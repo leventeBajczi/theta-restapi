@@ -35,7 +35,7 @@ data class InTaskDto(
         task.userId,
         task.parameters,
         task.priority,
-        InTaskBenchmarkDto(InResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
+        InTaskBenchmarkDto(InResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS), task.useRunexec, task.useScheduling),
         task.toolVersion,
         task.runexecVersion,
     )

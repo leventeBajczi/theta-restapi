@@ -50,11 +50,12 @@ class RunexecRunner(
             val thetaExecutable = executableUtils.getExecutableWithPath("theta.zip", task.toolVersion)
 
             val command = arrayOf(executable, *runexecParams.toTypedArray(), thetaExecutable, *params)
-            val (runexecStdout, _) = command.runCommand(File(config.tmp), timeLimit.toLong(), TimeUnit.SECONDS)
+            val (runexecStdout, _) = command.runCommand(File(config.tmp))
             var usedCpuTimeS = 0.0
             var usedWallTimeS = 0.0
             var usedRamB = 0.0
             var retval = 0
+            var terminationreason: String? = null
             runexecStdout.forEachLine {
                 val split = it.split("=")
                 when (split[0]) {
@@ -62,6 +63,7 @@ class RunexecRunner(
                     "cputime" -> usedCpuTimeS = split[1].substring(0 until split[1].length - 1).toDouble()
                     "memory" -> usedRamB = split[1].substring(0 until split[1].length - 1).toDouble()
                     "returnvalue" -> retval = split[1].toInt()
+                    "terminationreason" -> terminationreason = split[1]
                 }
             }
             val newTask: Task = task.copy(
@@ -70,8 +72,10 @@ class RunexecRunner(
                 usedRamMb = usedRamB * 1e-6,
                 stderr = null,
                 stdout = stdout,
-                retval = retval
+                retval = retval,
+                terminationreason = terminationreason
             )
+            println("Benchmark run finished ($terminationreason): $newTask")
             taskRepository.save(newTask)
         } catch(e: Exception) {
             e.printStackTrace()
@@ -85,6 +89,7 @@ class RunexecRunner(
                 stderr = tmpFile,
                 retval = -1
             )
+            println("Benchmark run failed: $newTask")
             taskRepository.save(newTask)
         }
     }

@@ -47,16 +47,17 @@ data class OutTaskDto(
         task.userId,
         task.parameters,
         task.priority,
-        OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS)),
+        OutTaskBenchmarkDto(OutResourcesDto(task.logicalCpu, ramM = task.ramMb, timeoutS = task.timeoutS), task.useRunexec, task.useScheduling),
         doneStatus = if(task.stdout != null) OutStatusDto(
             task.usedRamMb,
             task.usedTimeS,
             task.usedCpuTimeS,
             stdout = Base64.getEncoder().encodeToString(task.stdout?.readBytes() ?: ByteArray(0)),
             stderr = Base64.getEncoder().encodeToString(task.stderr?.readBytes() ?: ByteArray(0)),
-            retval = task.retval) else null,
+            retval = task.retval,
+            terminationreason = task.terminationreason) else null,
         toolVersion = task.toolVersion,
-        runexecVersion = task.runexecVersion
+        runexecVersion = task.runexecVersion,
     ) {}
 
 }
